@@ -25,6 +25,9 @@ public class Human extends Entity{
             gl.check();
             leave();
             gatherFood();
+            if(isAlive){
+                goBack();
+            }
         }
     }
     private void prepare(){
@@ -85,5 +88,8 @@ public class Human extends Entity{
             return false;
         this.zombieAttacking = z;
         return true;
+    }
+    private void goBack(){
+        
     }
 }
