@@ -1,5 +1,7 @@
 package poo.cal;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 public class Human extends Entity{
     private Refuge refuge;
     private Tunnels tunnels;
@@ -10,6 +12,9 @@ public class Human extends Entity{
     private int riskZoneNo = 0;
     private Zombie zombieAttacking = null;
     private ExecutorService pool;
+
+    private Lock gatherLock = new ReentrantLock();
+
     public Human(String id, GlobalLock gl, ApocalypseLogger logger, ExecutorService pool, Refuge refuge, Tunnels tunnels, RiskZones riskZones) {
         super(id, gl, logger);
         this.pool = pool;
@@ -27,6 +32,10 @@ public class Human extends Entity{
             gatherFood();
             if(isAlive){
                 goBack();
+                dropFoodAndRest();
+                eat();
+                if(isMarked)
+                    heal();
             }
         }
     }
@@ -39,9 +48,9 @@ public class Human extends Entity{
     private void leave(){
         riskZoneNo = random.nextInt(4);
         logger.log(id + " is entering into tunnel no. "+riskZoneNo);
-        tunnels.enterTunnel(this, riskZoneNo);
+        tunnels.enterTunnel(this, riskZoneNo, false);
         gl.check();
-        logger.log(id + " is entering into risk zone no. "+riskZoneNo);
+        logger.log(id + " has left tunnel no. "+riskZoneNo+" and is now entering into risk zone no. "+riskZoneNo);
         riskZones.enter(this, riskZoneNo);
     }
     private void gatherFood(){
@@ -53,12 +62,15 @@ public class Human extends Entity{
             }
         }
         gl.check();
+        gatherLock.lock();
         if (zombieAttacking == null){
             food = 2;
             logger.log(id + " has picked the food and is now leaving risk zone no. " + riskZoneNo);
             riskZones.leave(this, riskZoneNo);
+            gatherLock.unlock();
         }
         else{
+            gatherLock.unlock();
             zombieAttackSequence();
         }
     }
@@ -84,12 +96,53 @@ public class Human extends Entity{
         
     }
     public synchronized boolean attackHuman(Zombie z){
-        if (this.food >= 2 || this.isMarked || this.zombieAttacking != null)
+        try{
+            gatherLock.lock();
+            if (this.food >= 2 || this.isMarked || this.zombieAttacking != null)
             return false;
-        this.zombieAttacking = z;
-        return true;
+            this.zombieAttacking = z;
+            return true;
+        }
+        finally{
+            gatherLock.unlock();
+        }
+
     }
     private void goBack(){
-        
+        logger.log(id+" has entered tunnel no. "+riskZoneNo);
+        tunnels.enterTunnel(this, riskZoneNo, true);
+        logger.log(id+" has left tunnel no. "+riskZoneNo+" and is now inside the refuge");
     }
+    private void dropFoodAndRest(){
+        gl.check();
+        refuge.dropFood(food);
+        //log
+        this.food = 0;
+        gl.check();
+        logger.log(id + " is entering the rest zone");
+        refuge.restGate(this, true);
+        this.sleep(2000 + random.nextInt(3) * 1000);
+        logger.log(id + " is leaving the rest zone");
+        refuge.restGate(this, false);
+    }
+    private void eat(){
+        logger.log(id + " is entering the dining zone");
+        refuge.diningGate(this, true);
+        gl.check();
+        refuge.eat();
+        logger.log(id + " has got a piece of food and is now eating");
+        this.sleep(3000 + random.nextInt(3)*1000);
+        logger.log(id + " is leaving the dining zone");
+        refuge.diningGate(this, false);
+    }
+    private void heal(){
+        logger.log(id + " is entering the rest zone for heaing");
+        refuge.restGate(this, true);
+        gl.check();
+        this.sleep(3000 + random.nextInt(3)*1000);
+        this.isMarked = false;
+        logger.log(id + " has healed and is leaving the rest zone");
+        refuge.restGate(this, false);
+    }
+
 }
