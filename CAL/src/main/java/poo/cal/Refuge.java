@@ -1,39 +1,38 @@
 package poo.cal;
 
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextArea;
 
 public class Refuge  {
     private AtomicInteger food = new AtomicInteger(0);
-    private ArrayList<Human> commonArea = new ArrayList<>();
-    private ArrayList<Human> restArea = new ArrayList<>();
-    private ArrayList<Human> diningArea = new ArrayList<>();
+    private GraphicArrayList<Human> commonArea;
+    private GraphicArrayList<Human> restArea;
+    private GraphicArrayList<Human> diningArea;
 
-    private void enteringProcedure(ArrayList<Human> list, JTextArea t, Human h, boolean isEntering){
+    public Refuge(JTextArea commonTArea, JTextArea restTArea, JTextArea diningTArea) {
+        this.commonArea = new GraphicArrayList<>(commonTArea);
+        this.restArea = new GraphicArrayList<>(restTArea);
+        this.diningArea = new GraphicArrayList<>(diningTArea);
+    }
+    private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
         if(isEntering){
             list.add(h);
         }else{
             list.remove(h);
         }
-        //t
     }
     public synchronized void commonGate(Human h, boolean isEntering){
-        if (isEntering){
-            commonArea.add(h);
-        }
-        else{
-            commonArea.remove(h);
-        }
-        //grafico
+        enteringProcedure(commonArea, h, isEntering);
     }
 
     public  synchronized void restGate(Human h, boolean isEntering){
-
+        enteringProcedure(restArea, h, isEntering);
     }
 
-    public synchronized void diningGate(Human h, boolean isEntering){}
+    public synchronized void diningGate(Human h, boolean isEntering){
+        enteringProcedure(diningArea, h, isEntering);
+    }
 
     public void dropFood(int food){
         synchronized(this.food){
