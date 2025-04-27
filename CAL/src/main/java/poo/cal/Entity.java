@@ -28,5 +28,9 @@ public abstract class Entity implements Runnable{
         }
     }
 
+    @Override
+    public String toString(){
+        return this.id;
+    }
 
 }
