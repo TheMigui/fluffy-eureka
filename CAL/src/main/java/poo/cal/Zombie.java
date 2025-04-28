@@ -1,12 +1,13 @@
 package poo.cal;
 
-
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 public class Zombie extends Entity{
     RiskZones riskZones;
     private int riskZoneNo;
     private AtomicInteger killCount = new AtomicInteger(0);
     private int attackDuration = 0;
+    private Random random;
 
 
 
@@ -20,6 +21,30 @@ public class Zombie extends Entity{
     //     Zombie(id, gl, logger, riskZones, random.nextInt(4) + 1);
     // } 
 
+
+    public void run(){
+        try{
+            while(true){
+                enterZombie();
+                attackZombie();
+
+            }
+        }
+        catch (InterruptedException e){
+
+        }
+
+    }
+
+
+    private void enterZombie(){
+      int riskZoneNo = random.nextInt(4);
+      riskZones.enter(this,riskZoneNo);
+    }
+    private void attackZombie(){
+        int riskZoneNo = random.nextInt(4);
+        riskZones.enter(this,riskZoneNo);
+      }
     public synchronized void endAttack(){}
 
 
@@ -28,7 +53,7 @@ public class Zombie extends Entity{
         return attackDuration;
     }
 
-    public void incrementKillCount(){
+    public void incrementKillCount(){   
         killCount.incrementAndGet();
     }
     public int getKillCount(){
@@ -36,6 +61,5 @@ public class Zombie extends Entity{
     }
 
 
-    @Override
-    public void run(){}
+    
 }
