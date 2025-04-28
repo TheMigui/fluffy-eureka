@@ -20,6 +20,7 @@ public abstract class Entity implements Runnable{
     }
 
     protected void sleep(int ms){
+        //Un sleep pero sin el rollo del try-catch, para que no haya que ponerlo cada vez
         try {
             Thread.sleep(ms);
             gl.check();

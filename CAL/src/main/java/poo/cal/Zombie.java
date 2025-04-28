@@ -45,7 +45,9 @@ public class Zombie extends Entity{
         int riskZoneNo = random.nextInt(4);
         riskZones.enter(this,riskZoneNo);
       }
-    public synchronized void endAttack(){}
+    public synchronized void endAttack(){
+        //El zombie se quedará bloqueado tras atacar al humano, pues es este quien tiene la lógica de ataque. Por lo tanto, esto sirve para desbloquear el zombie tras el ataque
+    }
 
 
 

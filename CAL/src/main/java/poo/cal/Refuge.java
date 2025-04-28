@@ -16,6 +16,7 @@ public class Refuge  {
         this.diningArea = new GraphicArrayList<>(diningTArea);
     }
     private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
+        //Para cuando un humano entra o sale de una zona
         if(isEntering){
             list.add(h);
         }else{

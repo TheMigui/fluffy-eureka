@@ -26,6 +26,6 @@ public class RiskZones {
         zone.remove(e);
     }
     public void notifyAttack(Entity e, Zombie z, int which, boolean add){
-
+        // Esto es para que el humano y zombie de un ataque se pongan en rojo en el texto (opcional)
     }
 }

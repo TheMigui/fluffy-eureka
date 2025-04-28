@@ -78,7 +78,7 @@ public class Human extends Entity{
         logger.log(id + " is being attacked by "+ zombieAttacking.getId()+"!!!");
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
         this.sleep(zombieAttacking.getAttackDuration());
-        this.isAlive = random.nextBoolean();
+        this.isAlive = random.nextInt(3) > 0 ? true : false;
         if (this.isAlive){
             this.isMarked = true;
             this.food = 0;
@@ -93,7 +93,7 @@ public class Human extends Entity{
         zombieAttacking.endAttack();
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
         riskZones.leave(this, riskZoneNo);
-        
+        this.zombieAttacking = null;
     }
     public synchronized boolean attackHuman(Zombie z){
         try{
