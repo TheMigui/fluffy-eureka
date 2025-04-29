@@ -47,8 +47,9 @@ public class Human extends Entity{
     }
     private void leave(){
         riskZoneNo = random.nextInt(4);
-        logger.log(id + " is entering into tunnel no. "+riskZoneNo);
-        tunnels.enterTunnel(this, riskZoneNo, false);
+        logger.log(id + " wants to enter into tunnel no. "+riskZoneNo);
+        refuge.awaitBarrier(riskZoneNo);
+        refuge.enterTunnel(this, riskZoneNo);
         gl.check();
         logger.log(id + " has left tunnel no. "+riskZoneNo+" and is now entering into risk zone no. "+riskZoneNo);
         riskZones.enter(this, riskZoneNo);
@@ -78,7 +79,7 @@ public class Human extends Entity{
         logger.log(id + " is being attacked by "+ zombieAttacking.getId()+"!!!");
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
         this.sleep(zombieAttacking.getAttackDuration());
-        this.isAlive = random.nextInt(3) > 0 ? true : false;
+        this.isAlive = random.nextBoolean();
         if (this.isAlive){
             this.isMarked = true;
             this.food = 0;
@@ -93,7 +94,7 @@ public class Human extends Entity{
         zombieAttacking.endAttack();
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
         riskZones.leave(this, riskZoneNo);
-        this.zombieAttacking = null;
+        
     }
     public synchronized boolean attackHuman(Zombie z){
         try{
@@ -144,5 +145,7 @@ public class Human extends Entity{
         logger.log(id + " has healed and is leaving the rest zone");
         refuge.restGate(this, false);
     }
-
+    public int getriskZoneNo() {
+        return riskZoneNo;
+    }
 }

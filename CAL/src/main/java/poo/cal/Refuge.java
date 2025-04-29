@@ -4,19 +4,31 @@ package poo.cal;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextArea;
 
+import java.util.Queue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 public class Refuge  {
     private AtomicInteger food = new AtomicInteger(0);
     private GraphicArrayList<Human> commonArea;
     private GraphicArrayList<Human> restArea;
     private GraphicArrayList<Human> diningArea;
+    private Tunnels tunnels;
 
+    private  CyclicBarrier groupBarrier1;
+    private  CyclicBarrier groupBarrier2;
+    private  CyclicBarrier groupBarrier3;
+    private  CyclicBarrier groupBarrier4;
     public Refuge(JTextArea commonTArea, JTextArea restTArea, JTextArea diningTArea) {
+        
         this.commonArea = new GraphicArrayList<>(commonTArea);
         this.restArea = new GraphicArrayList<>(restTArea);
         this.diningArea = new GraphicArrayList<>(diningTArea);
+        this.groupBarrier1 = new CyclicBarrier(3,tunnels.addgroup);
+        this.groupBarrier2 = new CyclicBarrier(3,Tunnels(2));
+        this.groupBarrier3 = new CyclicBarrier(3,Tunnels(3));
+        this.groupBarrier4 = new CyclicBarrier(3,Tunnels(4));
     }
     private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
-        //Para cuando un humano entra o sale de una zona
         if(isEntering){
             list.add(h);
         }else{
@@ -54,5 +66,31 @@ public class Refuge  {
 
         }
     }
+    public void awaitBarrier(int riskZoneNo) throws InterruptedException {
+    try {
+        switch(riskZoneNo) {
+            case 0:
+             groupBarrier1.await();
+              break;
+            case 1:
+             groupBarrier2.await();
+              break;
+            case 2:
+             groupBarrier3.await();
+              break;
+            case 3:
+             groupBarrier4.await();
+              break;
+            default: throw new IllegalArgumentException("Invalid zone number");
+        }
+    } catch (BrokenBarrierException e) {
+        // Convertir a InterruptedException para manejo uniforme
+        Thread.currentThread().interrupt();
+        throw new InterruptedException("El barrier fue roto mientras se esperaba");
+    }
+    }
+    
+
+
 
 }
