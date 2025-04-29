@@ -45,11 +45,15 @@ public class Human extends Entity{
         this.sleep(random.nextInt(2)*1000 + 1000);
         refuge.commonGate(this, false);
     }
+    //He cambiado esto para que espere en la zona común antes de ir al tunel
     private void leave(){
         riskZoneNo = random.nextInt(4);
-        logger.log(id + " wants to enter into tunnel no. "+riskZoneNo);
-        refuge.awaitBarrier(riskZoneNo);
-        refuge.enterTunnel(this, riskZoneNo);
+        logger.log(id + " wants to enter into tunnel no. "+riskZoneNo+1);
+        try {
+            refuge.awaitBarrier(riskZoneNo);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         gl.check();
         logger.log(id + " has left tunnel no. "+riskZoneNo+" and is now entering into risk zone no. "+riskZoneNo);
         riskZones.enter(this, riskZoneNo);
@@ -111,7 +115,7 @@ public class Human extends Entity{
     }
     private void goBack(){
         logger.log(id+" has entered tunnel no. "+riskZoneNo);
-        tunnels.enterTunnel(this, riskZoneNo, true);
+        tunnels.enterTunneldang(this);
         logger.log(id+" has left tunnel no. "+riskZoneNo+" and is now inside the refuge");
     }
     private void dropFoodAndRest(){

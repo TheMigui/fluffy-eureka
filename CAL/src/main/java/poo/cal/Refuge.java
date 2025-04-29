@@ -3,8 +3,6 @@ package poo.cal;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextArea;
-
-import java.util.Queue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 public class Refuge  {
@@ -23,10 +21,10 @@ public class Refuge  {
         this.commonArea = new GraphicArrayList<>(commonTArea);
         this.restArea = new GraphicArrayList<>(restTArea);
         this.diningArea = new GraphicArrayList<>(diningTArea);
-        this.groupBarrier1 = new CyclicBarrier(3,tunnels.addgroup);
-        this.groupBarrier2 = new CyclicBarrier(3,Tunnels(2));
-        this.groupBarrier3 = new CyclicBarrier(3,Tunnels(3));
-        this.groupBarrier4 = new CyclicBarrier(3,Tunnels(4));
+        this.groupBarrier1 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 1));
+        this.groupBarrier2 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 2));
+        this.groupBarrier3 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 3));
+        this.groupBarrier4 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 4));
     }
     private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
         if(isEntering){
