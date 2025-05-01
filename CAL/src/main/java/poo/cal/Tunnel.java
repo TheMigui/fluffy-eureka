@@ -48,7 +48,6 @@ public class Tunnel {
                 waitingForGroupList.remove(0);
             }
             updateTunnelLeavingGui();
-            groupCondition.signalAll();
             arraysLock.unlock();
         });
     }
