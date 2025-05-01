@@ -1,4 +1,4 @@
-package poo.cal;
+package poo.bak;
 import java.util.ArrayList;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -10,6 +10,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import poo.cal.GraphicArrayList;
+import poo.cal.Human;
 import poo.cal.GraphicArrayList.Direction;
 
 import java.util.concurrent.locks.Condition;
@@ -24,13 +26,13 @@ public class Tunnel {
     private JTextPane leavingRefugeOrWaitingTextPane;
     private Style waitingForGroupStyle;
     private Style alreadyInGroupStyle;
-    private CyclicBarrier barrier;
-    private Lock arraysLock = new ReentrantLock(true);
-    private Condition groupCondition = arraysLock.newCondition();
 
-    private Lock crossingLock = new ReentrantLock(true);
-    private Condition tunnelFullCondition = crossingLock.newCondition();
-    
+    private CyclicBarrier barrier;
+    private Lock tunnelLock = new ReentrantLock(true);
+    private Condition tunnelFullCondition = tunnelLock.newCondition();
+
+    private Lock barrierLock = new ReentrantLock(true);
+    private Condition groupCondition = barrierLock.newCondition();
 
 
     public Tunnel(JTextPane waitingInTextPane, JTextPane crossingTextPane, JTextPane waitingOutTextPane) {
@@ -42,69 +44,63 @@ public class Tunnel {
         this.alreadyInGroupStyle = waitingInTextPane.addStyle("AlreadyInGroup", null);
         StyleConstants.setForeground(alreadyInGroupStyle, java.awt.Color.GREEN);
         this.barrier = new CyclicBarrier(3, () -> {
-            arraysLock.lock();
+            tunnelLock.lock();
             for (int i = 0; i < 3; i++) {
                 leavingRefugeList.add(waitingForGroupList.get(0));
                 waitingForGroupList.remove(0);
             }
             updateTunnelLeavingGui();
             groupCondition.signalAll();
-            arraysLock.unlock();
+            tunnelLock.unlock();
         });
     }
 
     public void enterTunnel(Human h, boolean isEnteringRefuge) {
         //CÓDIGO A REFACTORIZAR (SE HA IDO LIANDO)
+        
         try{
-            if(isEnteringRefuge){
-                synchronized(this.enteringRefugeList){
-                    enteringRefugeList.add(h);
-                }
-            }else{
-                arraysLock.lock();
 
-                waitingForGroupList.add(h);
-                updateTunnelLeavingGui();
-                while(waitingForGroupList.indexOf(h) > 2){
+            synchronized (this) {
+                if (isEnteringRefuge) {
+                    enteringRefugeList.add(h);
+                } else {
+                    waitingForGroupList.add(h);
+                    updateTunnelLeavingGui();
+                }
+            }
+            
+            if(!isEnteringRefuge) {
+                barrierLock.lock();
+                while (waitingForGroupList.indexOf(h) >= 3) {
                     groupCondition.await();
                 }
-                arraysLock.unlock();
-
+                barrierLock.unlock();
                 barrier.await();
-
             }
-            crossingLock.lock();
-            if(isEnteringRefuge){
-                while(humanCrossing != null){
-                    tunnelFullCondition.await();
-                }
-                synchronized(enteringRefugeList){
-                    enteringRefugeList.remove(h);
-                }
-            }else{
-                arraysLock.lock();
-                groupCondition.signal();
-                while(humanCrossing != null || (!isEnteringRefuge && !enteringRefugeList.isEmpty())){
-                    arraysLock.unlock();
-                    tunnelFullCondition.await();
-                    arraysLock.lock();
-                }
-                leavingRefugeList.remove(h);
-                updateTunnelLeavingGui();
-                arraysLock.unlock();
+            tunnelLock.lock();
+            while(humanCrossing != null || (!isEnteringRefuge && !enteringRefugeList.isEmpty())){
+                tunnelFullCondition.await();
             }
             humanCrossing = h;
+            if(isEnteringRefuge) {
+                enteringRefugeList.remove(h);
+            } else {
+                leavingRefugeList.remove(h);
+                updateTunnelLeavingGui();
+            }
             crossingTextPane.setText(humanCrossing.getEntityId());
             humanCrossing.sleep(1000);
             crossingTextPane.setText("");
             humanCrossing = null;
+
             tunnelFullCondition.signal();
-            crossingLock.unlock();
-            
-        }catch(Exception e){
+
+        } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } finally {
+            tunnelLock.unlock();
         }
-        
     }
     public synchronized void updateTunnelLeavingGui(){
         try{
