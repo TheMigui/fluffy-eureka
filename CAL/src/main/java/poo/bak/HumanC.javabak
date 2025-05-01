@@ -1,28 +1,30 @@
-package poo.cal;
-import java.util.List;
+package poo.bak;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+import poo.cal.Entity;
+import poo.cal.Refuge;
+import poo.cal.RiskZones;
+import poo.cal.Tunnels;
+import poo.cal.Zombie;
 
 import java.util.concurrent.locks.Lock;
-public class Human extends Entity{
+public class HumanC extends Entity{
     private Refuge refuge;
     private Tunnels tunnels;
     private RiskZones riskZones;
     private boolean isMarked = false;
     private boolean isAlive = true;
-    private boolean isOutside = false;
     private int food = 0;
     private int riskZoneNo = 0;
     private Zombie zombieAttacking = null;
-    private List<Entity> threadList;
-
+    private ExecutorService pool;
 
     private Lock gatherLock = new ReentrantLock();
 
-    public Human(String id, GlobalLock gl, ApocalypseLogger logger, List<Entity> threadList , Refuge refuge, Tunnels tunnels, RiskZones riskZones) {
+    public HumanC(String id, GlobalLock gl, ApocalypseLogger logger, ExecutorService pool, Refuge refuge, Tunnels tunnels, RiskZones riskZones) {
         super(id, gl, logger);
-        this.threadList = threadList;
+        this.pool = pool;
         this.refuge = refuge;
         this.tunnels = tunnels;
         this.riskZones = riskZones;
@@ -33,7 +35,7 @@ public class Human extends Entity{
         while(isAlive){
             prepare();
             gl.check();
-            leaveRefuge();
+            leave();
             gatherFood();
             if(isAlive){
                 goBack();
@@ -51,13 +53,16 @@ public class Human extends Entity{
         refuge.commonGate(this, false);
     }
     //He cambiado esto para que espere en la zona común antes de ir al tunel
-    private void leaveRefuge(){
-        //riskZoneNo = random.nextInt(4) + 1;
-        riskZoneNo = 1;
-        logger.log(id + " is leaving the refuge through tunnel no. "+riskZoneNo);
-        tunnels.enterTunnel(this, riskZoneNo, false);
+    private void leave(){
+        riskZoneNo = random.nextInt(4);
+        logger.log(id + " wants to enter into tunnel no. "+riskZoneNo+1);
+        try {
+            refuge.awaitBarrier(riskZoneNo);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        gl.check();
         logger.log(id + " has left tunnel no. "+riskZoneNo+" and is now entering into risk zone no. "+riskZoneNo);
-        isOutside = true;
         riskZones.enter(this, riskZoneNo);
     }
     private void gatherFood(){
@@ -71,7 +76,6 @@ public class Human extends Entity{
         gl.check();
         gatherLock.lock();
         if (zombieAttacking == null){
-            isOutside = false;
             food = 2;
             logger.log(id + " has picked the food and is now leaving risk zone no. " + riskZoneNo);
             riskZones.leave(this, riskZoneNo);
@@ -86,10 +90,9 @@ public class Human extends Entity{
         logger.log(id + " is being attacked by "+ zombieAttacking.getEntityId()+"!!!");
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
         this.sleep(zombieAttacking.getAttackDuration());
-        this.isAlive = random.nextInt(3) != 0; // 1/3 chance of dying
+        this.isAlive = random.nextBoolean();
         if (this.isAlive){
             this.isMarked = true;
-            this.isOutside = false;
             this.food = 0;
             logger.log(id + " survived the attack from " + zombieAttacking.getEntityId() + " and is now leaving risk zone no. " + riskZoneNo + ". Phew!");
         }
@@ -97,8 +100,7 @@ public class Human extends Entity{
             logger.log(id + " was killed by "+zombieAttacking.getEntityId() + " and has become the zombie no. " + id.replace('H', 'Z') + ". RIP");
             zombieAttacking.incrementKillCount();
             Zombie newZombie = new Zombie(id.replace('H', 'Z'), gl, logger, riskZones, riskZoneNo);
-            threadList.add(newZombie);
-            newZombie.start();
+            pool.execute(newZombie);
         }
         zombieAttacking.endAttack();
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
@@ -108,8 +110,8 @@ public class Human extends Entity{
     public synchronized boolean attackHuman(Zombie z){
         try{
             gatherLock.lock();
-            if (!this.isOutside || this.isMarked || this.zombieAttacking != null)
-                return false;
+            if (this.food >= 2 || this.isMarked || this.zombieAttacking != null)
+            return false;
             this.zombieAttacking = z;
             return true;
         }
@@ -119,8 +121,8 @@ public class Human extends Entity{
 
     }
     private void goBack(){
-        logger.log(id+" is getting back to the refuge through tunnel no. "+riskZoneNo);
-        tunnels.enterTunnel(this, this.riskZoneNo, true);
+        logger.log(id+" has entered tunnel no. "+riskZoneNo);
+        tunnels.enterTunneldang(this);
         logger.log(id+" has left tunnel no. "+riskZoneNo+" and is now inside the refuge");
     }
     private void dropFoodAndRest(){

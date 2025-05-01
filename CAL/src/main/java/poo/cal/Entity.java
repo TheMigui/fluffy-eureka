@@ -1,7 +1,7 @@
 package poo.cal;
 import java.util.Random;
 
-public abstract class Entity implements Runnable{
+public abstract class Entity extends Thread {
     protected String id;
     protected GlobalLock gl;
     protected Random random = new Random();
@@ -15,7 +15,7 @@ public abstract class Entity implements Runnable{
 
     abstract public void run();
 
-    public String getId() {
+    public String getEntityId() {
         return id;
     }
 

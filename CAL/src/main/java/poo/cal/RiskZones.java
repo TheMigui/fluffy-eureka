@@ -1,39 +1,29 @@
 package poo.cal;
-import java.util.ArrayList;
-import javax.swing.JTextArea;
+
+import javax.swing.JTextPane;
 
 public class RiskZones {
-    private ArrayList<GraphicArrayList<Entity>> zones;
-    
-    public RiskZones(JTextArea zone1, JTextArea zone2, JTextArea zone3, JTextArea zone4) {
-        zones = new ArrayList<>(4);
-        // Añadimos null en la posición 0 para que los índices coincidan con los números de zona 1-4
-        zones.add(null);
-        zones.add(new GraphicArrayList<>(zone1));
-        zones.add(new GraphicArrayList<>(zone2));
-        zones.add(new GraphicArrayList<>(zone3));
-        zones.add(new GraphicArrayList<>(zone4));
-    }
+    private RiskZone riskZones[] = new RiskZone[4];
 
-    public GraphicArrayList<Entity> getZone(int zoneNumber) {
-        // Validar que el número de zona esté en el rango correcto
-        if (zoneNumber < 1 || zoneNumber > 4) {
-            return null;
-        }
-        return zones.get(zoneNumber);
-    }
-
-    public synchronized void enter(Entity e, int which) {
-        if (which >= 1 && which <= 4) {
-            GraphicArrayList<Entity> zone = zones.get(which);
-            zone.add(e);
+    public RiskZones(JTextPane humanTextPanes[], JTextPane zombieTextPanes[]) {
+        for (int i = 0; i < riskZones.length; i++) {
+            riskZones[i] = new RiskZone(humanTextPanes[i], zombieTextPanes[i]);
         }
     }
 
-    public void leave(Entity e, int which) {
-        if (which >= 1 && which <= 4) {
-            GraphicArrayList<Entity> zone = zones.get(which);
-            zone.remove(e);
-        }
+    public void enter(Entity e, int riskZoneIndex) {
+        riskZones[riskZoneIndex - 1].enter(e);
+    }
+
+    public void leave(Entity e, int riskZoneIndex) {
+        riskZones[riskZoneIndex - 1].leave(e);
+    }
+
+    public void notifyAttack(Human h, Zombie z, int riskZoneIndex, boolean isAttacking) {
+        riskZones[riskZoneIndex - 1].notifyAttack(h, z, isAttacking);
+    }
+
+    public Human getRandomHuman(int riskZoneIndex) {
+        return riskZones[riskZoneIndex - 1].getRandomHuman();
     }
 }

@@ -30,7 +30,7 @@ public class Zombie extends Entity{
 
             }
         }
-        catch (InterruptedException e){
+        catch (Exception e){ //CAMBIAR
 
         }
 

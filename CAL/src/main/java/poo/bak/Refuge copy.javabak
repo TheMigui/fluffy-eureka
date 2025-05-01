@@ -1,0 +1,99 @@
+package poo.bak;
+
+
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.JTextPane;
+
+import poo.cal.GraphicArrayList;
+import poo.cal.Human;
+import poo.cal.Tunnels;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+public class Refuge  {
+    private AtomicInteger food = new AtomicInteger(0);
+    private GraphicArrayList<Human> commonArea;
+    private GraphicArrayList<Human> restArea;
+    private GraphicArrayList<Human> diningArea;
+    private Tunnels tunnels;
+
+    private  CyclicBarrier groupBarrier1;
+    private  CyclicBarrier groupBarrier2;
+    private  CyclicBarrier groupBarrier3;
+    private  CyclicBarrier groupBarrier4;
+    public Refuge(JTextPane commonTArea, JTextPane restTArea, JTextPane diningTArea) {
+        
+        this.commonArea = new GraphicArrayList<>(commonTArea);
+        this.restArea = new GraphicArrayList<>(restTArea);
+        this.diningArea = new GraphicArrayList<>(diningTArea);
+        this.groupBarrier1 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 1));
+        this.groupBarrier2 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 2));
+        this.groupBarrier3 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 3));
+        this.groupBarrier4 = new CyclicBarrier(3,Tunnels.createGroupAction(tunnels, 4));
+    }
+    private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
+        if(isEntering){
+            list.add(h);
+        }else{
+            list.remove(h);
+        }
+    }
+    public synchronized void commonGate(Human h, boolean isEntering){
+        enteringProcedure(commonArea, h, isEntering);
+    }
+
+    public  synchronized void restGate(Human h, boolean isEntering){
+        enteringProcedure(restArea, h, isEntering);
+    }
+
+    public synchronized void diningGate(Human h, boolean isEntering){
+        enteringProcedure(diningArea, h, isEntering);
+    }
+
+    public void dropFood(int food){
+        synchronized(this.food){
+            this.food.set(this.food.get() + food);
+            notifyAll();
+        }
+    }
+    public void eat(){
+        synchronized(this.food){
+            try{
+                while(this.food.get() < 1){
+                    wait();
+                }
+                this.food.decrementAndGet();
+            }catch(InterruptedException e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+    public void awaitBarrier(int riskZoneNo) throws InterruptedException {
+    try {
+        switch(riskZoneNo) {
+            case 0:
+             groupBarrier1.await();
+              break;
+            case 1:
+             groupBarrier2.await();
+              break;
+            case 2:
+             groupBarrier3.await();
+              break;
+            case 3:
+             groupBarrier4.await();
+              break;
+            default: throw new IllegalArgumentException("Invalid zone number");
+        }
+    } catch (BrokenBarrierException e) {
+        // Convertir a InterruptedException para manejo uniforme
+        Thread.currentThread().interrupt();
+        throw new InterruptedException("El barrier fue roto mientras se esperaba");
+    }
+    }
+    
+
+
+
+}

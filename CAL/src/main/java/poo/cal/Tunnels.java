@@ -1,80 +1,16 @@
 package poo.cal;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import javax.swing.JTextPane;
 public class Tunnels {
-    protected int id;
-    private Queue<Human>[] tunnelsrefQueue = new Queue[4];
-    private Queue<Human>[] tunnelsdangQueue = new Queue[4];
-    private int[] espaciotunel = {0, 0, 0, 0};
-    private ExecutorService executor;
-    public Tunnels (int id ){
-        this.id= id;
+    private Tunnel [] tunnels = new Tunnel[4];
+    public Tunnels (JTextPane crossingTextPanes[], JTextPane waitingInTextPanes[], JTextPane waitingGroupTextPanes[]) {
         for (int i = 0; i < 4; i++) {
-            tunnelsrefQueue[i] = new LinkedList<>();
-            tunnelsdangQueue[i] = new LinkedList<>();
-        }
-        this.executor = Executors.newFixedThreadPool(4);
-        startTunnels();
-    }
-    //He hecho una threadpool y que cada uno de ellos maneje un tunnel
-    private void startTunnels() {
-        for (int i = 0; i < 4; i++) {
-            int numTunnel = i;
-            executor.execute(() -> {
-                while (true) {
-                    try {
-                        tunnelmechanism(numTunnel);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            });
-        }
-    }
-    //Agregar hilos a las respectivas queues
-    public void enterTunnelref(Human h, int which){
-        tunnelsrefQueue[which-1].add(h);
-    }
-    public void enterTunneldang(Human h){
-       int numbertun =  h.getriskZoneNo();
-        tunnelsrefQueue[numbertun-1].add(h);
-    }
-    // mecanismo simple del tunnel para pasar uno y otro?
-    // FALTA poner el tiempo random para pasar
-    public synchronized void tunnelmechanism(int numero) throws InterruptedException {
-        if(espaciotunel[numero] < 1 && (!tunnelsdangQueue[numero].isEmpty() || tunnelsrefQueue[numero].isEmpty())){
-            if(!tunnelsdangQueue[numero].isEmpty()){
-                Human pasando = tunnelsdangQueue[numero].poll();
-                espaciotunel[numero] += 1;
-                pasando.sleep(5000);
-                // cosas graficas para que se muestre
-                espaciotunel[numero] -= 1;
-            }
-            else {
-                Human pasando = tunnelsrefQueue[numero].poll();
-                espaciotunel[numero] += 1;
-                pasando.sleep(5000);
-                // cosas graficas para que se muestre
-                espaciotunel[numero] -= 1;
-            }
-        }
-    }
-    // Estos dos métodos  son para añadir el grupo de 3 hilos a su queue
-    // correspondiente, pero vamos, lo he sacado de una IA porque no encontraba
-    //forma de hacerlo, para cambiar seguro
-    public void addGroupToTunnel(int tunnelNumber, List<Human> group) {
-        synchronized (tunnelsrefQueue[tunnelNumber - 1]) {
-            tunnelsrefQueue[tunnelNumber - 1].addAll(group);
+            tunnels[i] = new Tunnel(crossingTextPanes[i], waitingInTextPanes[i], waitingGroupTextPanes[i]);
         }
     }
 
-    // Acción para el barrier (factory method)
-    public static Runnable createGroupAction(Tunnels tunnels, int tunnelNumber) {
-        return () -> tunnels.addGroupToTunnel(tunnelNumber, new ArrayList<>());
+    public void enterTunnel(Human h, int which, boolean isEnteringRefuge) {
+        tunnels[which-1].enterTunnel(h, isEnteringRefuge);
     }
+    
 }
