@@ -19,7 +19,9 @@ public class Zombie extends Entity{
 
 
     public void run(){
-
+        enterDangerZone();
+        this.sleep(2000 + random.nextInt(2)*1000);
+        leaveDangerZone();
         while(true){
             enterDangerZone();
             attackZombie();
@@ -49,8 +51,7 @@ public class Zombie extends Entity{
             prey = riskZones.getRandomHuman(riskZoneNo);
         }
         if (prey == null){
-            logger.log(this.id + " found noone and is waiting to leave");
-            this.sleep(2000 + random.nextInt(2)*1000);
+            logger.log(this.id + " found no one and is waiting to leave");
         }else{
             synchronized(this){
                 logger.log(this.id + " is attacking " + prey.getEntityId());
@@ -61,7 +62,8 @@ public class Zombie extends Entity{
                 }
             }
         }
-       // riskZones.enter(this,riskZoneNo);
+        this.sleep(2000 + random.nextInt(2)*1000);
+
       }
     public synchronized void endAttack(){
         this.notify();

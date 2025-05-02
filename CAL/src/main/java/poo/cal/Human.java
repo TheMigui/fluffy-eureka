@@ -61,8 +61,7 @@ public class Human extends Entity{
     }
     //He cambiado esto para que espere en la zona común antes de ir al tunel
     private void leaveRefuge(){
-        //riskZoneNo = random.nextInt(4) + 1;
-        riskZoneNo = 1;
+        riskZoneNo = random.nextInt(4) + 1;
         logger.log(id + " is leaving the refuge through tunnel no. "+riskZoneNo);
         tunnels.enterTunnel(this, riskZoneNo, false);
         isOutside = true;
@@ -72,7 +71,7 @@ public class Human extends Entity{
     }
     private void gatherFood(){
         try{
-            Thread.sleep(2000 + 3000 + random.nextInt(3)*1000);
+            Thread.sleep(3000 + random.nextInt(3)*1000);
         }catch(InterruptedException e){
             if (zombieAttacking == null){
                 e.printStackTrace();
@@ -109,6 +108,7 @@ public class Human extends Entity{
             zombieAttacking.incrementKillCount();
             logger.log(zombieAttacking.getEntityId() + "'s kill count is now " + zombieAttacking.getKillCount());
             Zombie newZombie = new Zombie(id.replace('H', 'Z'), gl, logger, riskZones, riskZoneNo);
+            newZombie.setDaemon(true);
             threadMap.put(newZombie.getEntityId(), newZombie);
             threadMap.remove(id);
             newZombie.start();

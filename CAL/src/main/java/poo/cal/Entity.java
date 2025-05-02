@@ -26,7 +26,7 @@ public abstract class Entity extends Thread {
     protected void sleep(int ms){
         //Un sleep pero sin el rollo del try-catch, para que no haya que ponerlo cada vez
         try {
-            Thread.sleep(ms*2);
+            Thread.sleep(ms);
             gl.check();
         } catch (InterruptedException e) {
             e.printStackTrace();
