@@ -1,52 +1,66 @@
 package poo.cal;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 public class Zombie extends Entity{
     RiskZones riskZones;
     private int riskZoneNo;
     private AtomicInteger killCount = new AtomicInteger(0);
     private int attackDuration = 0;
-    private Random random;
 
 
 
-    public Zombie(String id, GlobalLock gl, ApocalypseLogger logger, RiskZones riskZones, int riskZoneNo) {
+
+    public Zombie(String id, GlobalLock gl, ApocalypseLogger logger, RiskZones riskZones, int riskZoneNo){ 
         super(id, gl, logger);
         this.riskZones = riskZones;
         this.riskZoneNo = riskZoneNo;
     }
 
-    // public Zombie(String id, GlobalLock gl, ApocalypseLogger logger, RiskZones riskZones){
-    //     Zombie(id, gl, logger, riskZones, random.nextInt(4) + 1);
-    // } 
 
 
     public void run(){
-        try{
-            while(true){
-                enterZombie();
-                attackZombie();
 
-            }
+        while(true){
+            enterDangerZone();
+            attackZombie();
+            leaveDangerZone();
         }
-        catch (Exception e){ //CAMBIAR
 
-        }
 
     }
 
 
-    private void enterZombie(){
-      int riskZoneNo = random.nextInt(4);
+    private void enterDangerZone(){
+      
       riskZones.enter(this,riskZoneNo);
     }
-    //Me preocupa lo "synchronized" que esté esto.
+    private void leaveDangerZone(){
+        riskZones.leave(this,riskZoneNo);
+        int previousZone = riskZoneNo;
+        while (previousZone == riskZoneNo){
+            riskZoneNo = 1 + random.nextInt(4);
+        }
+    }
     public synchronized void attackZombie(){
-        RiskZone targetZone = riskZones.getRiskZone(riskZoneNo);
-        Human preyHuman = riskZones.getRandomHuman(riskZoneNo);
-        preyHuman.attackHuman(this);
-        preyHuman.zombieAttackSequence();
+        logger.log(this.id + " is inside Risk Zone no. " + riskZoneNo + " and is looking for fresh meat");
+        attackDuration = random.nextInt(1001) + 500;
+        Human prey = riskZones.getRandomHuman(riskZoneNo);
+        while (prey != null && !prey.attackHuman(this)){
+            prey = riskZones.getRandomHuman(riskZoneNo);
+        }
+        if (prey == null){
+            logger.log(this.id + " found noone and is waiting to leave");
+            this.sleep(2000 + random.nextInt(2)*1000);
+        }else{
+            synchronized(this){
+                logger.log(this.id + " is attacking " + prey.getEntityId());
+                try{
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
        // riskZones.enter(this,riskZoneNo);
       }
     public synchronized void endAttack(){

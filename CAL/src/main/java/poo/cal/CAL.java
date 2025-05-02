@@ -4,9 +4,11 @@
  */
 package poo.cal;
 
-import java.util.ArrayList;
+
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+
+import java.util.Map;
 
 import javax.swing.JTextPane;
 
@@ -23,7 +25,9 @@ public class CAL extends javax.swing.JFrame {
      */
     public CAL() {
         initComponents();
-        List<Entity> threads = Collections.synchronizedList(new ArrayList<>());
+        //List<Entity> threads = Collections.synchronizedList(new ArrayList<>());
+
+        Map<String, Entity> threads = Collections.synchronizedMap(new HashMap<>());
         
         Refuge refuge = new Refuge(CommonAreaTP, DiningAreaTP, RestingAreaTP, FoodTP);
 

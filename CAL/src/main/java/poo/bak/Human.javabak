@@ -1,6 +1,5 @@
 package poo.cal;
-
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -16,26 +15,18 @@ public class Human extends Entity{
     private int food = 0;
     private int riskZoneNo = 0;
     private Zombie zombieAttacking = null;
-    private Map<String, Entity> threadMap;
+    private List<Entity> threadList;
+
 
     private Lock gatherLock = new ReentrantLock();
 
-    public Human(String id, GlobalLock gl, ApocalypseLogger logger, Map<String, Entity> threadMap, Refuge refuge, Tunnels tunnels, RiskZones riskZones) {
+    public Human(String id, GlobalLock gl, ApocalypseLogger logger, List<Entity> threadList , Refuge refuge, Tunnels tunnels, RiskZones riskZones) {
         super(id, gl, logger);
-        this.threadMap = threadMap;
+        this.threadList = threadList;
         this.refuge = refuge;
         this.tunnels = tunnels;
         this.riskZones = riskZones;
     }
-    @Override
-    public String getEntityId(){
-        if (isMarked)
-            return super.getEntityId() + "*";
-        else
-            return super.getEntityId();
-    }
-
-
     
     @Override
     public void run(){
@@ -65,23 +56,21 @@ public class Human extends Entity{
         riskZoneNo = 1;
         logger.log(id + " is leaving the refuge through tunnel no. "+riskZoneNo);
         tunnels.enterTunnel(this, riskZoneNo, false);
+        logger.log(id + " has left tunnel no. "+riskZoneNo+" and is now entering into risk zone no. "+riskZoneNo);
         isOutside = true;
         riskZones.enter(this, riskZoneNo);
-        logger.log(id + " has left tunnel no. "+riskZoneNo+" and is now entering into risk zone no. "+riskZoneNo);
-        
     }
     private void gatherFood(){
         try{
-            Thread.sleep(2000 + 3000 + random.nextInt(3)*1000);
+            Thread.sleep(3000 + random.nextInt(3)*1000);
         }catch(InterruptedException e){
-            if (zombieAttacking == null){
+            if (zombieAttacking != null){
                 e.printStackTrace();
             }
         }
         gl.check();
         gatherLock.lock();
         if (zombieAttacking == null){
-            Thread.interrupted();
             isOutside = false;
             food = 2;
             logger.log(id + " has picked the food and is now leaving risk zone no. " + riskZoneNo);
@@ -107,24 +96,21 @@ public class Human extends Entity{
         else{
             logger.log(id + " was killed by "+zombieAttacking.getEntityId() + " and has become the zombie no. " + id.replace('H', 'Z') + ". RIP");
             zombieAttacking.incrementKillCount();
-            logger.log(zombieAttacking.getEntityId() + "'s kill count is now " + zombieAttacking.getKillCount());
             Zombie newZombie = new Zombie(id.replace('H', 'Z'), gl, logger, riskZones, riskZoneNo);
-            threadMap.put(newZombie.getEntityId(), newZombie);
-            threadMap.remove(id);
+            threadList.add(newZombie);
             newZombie.start();
-
         }
-        riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, false);
         zombieAttacking.endAttack();
-        zombieAttacking = null;
+        riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
+        riskZones.leave(this, riskZoneNo);
+        
     }
-    public boolean attackHuman(Zombie z){
+    public synchronized boolean attackHuman(Zombie z){
         try{
             gatherLock.lock();
             if (!this.isOutside || this.isMarked || this.zombieAttacking != null)
                 return false;
             this.zombieAttacking = z;
-            threadMap.get(this.getEntityId()).interrupt();
             return true;
         }
         finally{
@@ -160,7 +146,7 @@ public class Human extends Entity{
         refuge.diningGate(this, false);
     }
     private void heal(){
-        logger.log(id + " is entering the rest zone for healing");
+        logger.log(id + " is entering the rest zone for heaing");
         refuge.restGate(this, true);
         gl.check();
         this.sleep(3000 + random.nextInt(3)*1000);
