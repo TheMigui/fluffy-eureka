@@ -94,7 +94,9 @@ public class Tunnel {
             }
             humanCrossing = h;
             crossingTextPane.setText(humanCrossing.getEntityId());
+
             humanCrossing.sleep(1000);
+
             crossingTextPane.setText("");
             humanCrossing = null;
             tunnelFullCondition.signal();

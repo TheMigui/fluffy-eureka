@@ -7,6 +7,7 @@ public abstract class Entity extends Thread {
     protected GlobalLock gl;
     protected Random random = new Random();
     protected ApocalypseLogger logger;
+    private int delta = 100;
     
 
     public Entity(String id, GlobalLock gl, ApocalypseLogger logger) {
@@ -24,10 +25,13 @@ public abstract class Entity extends Thread {
         return id;
     }
     protected void sleep(int ms){
-        //Un sleep pero sin el rollo del try-catch, para que no haya que ponerlo cada vez
+        int remainingMs = ms;
         try {
-            Thread.sleep(ms);
-            gl.check();
+            while(remainingMs > 0){
+                Thread.sleep(remainingMs < delta ? remainingMs : delta);
+                gl.check();
+                remainingMs -= delta;
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -4,7 +4,7 @@ package poo.cal;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextPane;
 
-import poo.cal.GraphicArrayList.Direction;
+
 
 public class Refuge  {
     private AtomicInteger food = new AtomicInteger(0);
@@ -16,7 +16,7 @@ public class Refuge  {
         
         this.commonArea = new GraphicArrayList<>(commonTArea);
         this.restArea = new GraphicArrayList<>(restTArea);
-        this.diningArea = new GraphicArrayList<>(diningTArea, Direction.VERTICAL);
+        this.diningArea = new GraphicArrayList<>(diningTArea);
         this.foodTextPane = foodTextPane;
         this.foodTextPane.setText("0");
         
@@ -54,7 +54,7 @@ public class Refuge  {
                     this.food.wait();
                 }
                 this.food.decrementAndGet();
-                foodTextPane.setText(Integer.toString(this.food.get()));
+                this.foodTextPane.setText(Integer.toString(this.food.get()));
             }catch(InterruptedException e){
                 e.printStackTrace();
             }

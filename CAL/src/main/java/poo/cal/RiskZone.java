@@ -34,31 +34,24 @@ public class RiskZone {
         StyleConstants.setForeground(attackStyle, java.awt.Color.RED);
 
     }
-    public void enter(Entity e) {
-        synchronized (this) {
+    public synchronized void enter(Entity e) {
            if (e instanceof Human) {
                 humanList.add((Human) e);
             } else if (e instanceof Zombie) {
                 zombieList.add((Zombie) e);
             }
             updateGui();
-        }
-        
     }
-    public void leave(Entity e) {
-        synchronized (this) {
+    public synchronized void leave(Entity e) {
             if (e instanceof Human) {
                 humanList.remove((Human) e);
             } else if (e instanceof Zombie) {
                 zombieList.remove((Zombie) e);
             }
             updateGui();
-        }
-        
     }
 
-    public void notifyAttack(Human h, Zombie z, boolean isAttacking) {
-        synchronized (this) {
+    public synchronized void notifyAttack(Human h, Zombie z, boolean isAttacking) {
             if (isAttacking) {
                 humanBeingAttackedList.add(h);
                 zombieAttackingList.add(z);
@@ -71,7 +64,6 @@ public class RiskZone {
                 zombieList.add(z);
             }
             updateGui();
-        }
     }
 
     private void updateGui() {
@@ -114,14 +106,12 @@ public class RiskZone {
         }
     }
 
-    public Human getRandomHuman(){
-        synchronized (this) {
+    public synchronized Human getRandomHuman(){
             if(humanList.isEmpty()){
                 return null;
             }
             int randomIndex = random.nextInt(humanList.size());
             return humanList.get(randomIndex);
-        }
     }
 
 }

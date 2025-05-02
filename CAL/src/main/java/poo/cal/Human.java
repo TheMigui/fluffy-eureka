@@ -41,7 +41,6 @@ public class Human extends Entity{
     public void run(){
         while(isAlive){
             prepare();
-            gl.check();
             leaveRefuge();
             gatherFood();
             if(isAlive){
@@ -138,11 +137,10 @@ public class Human extends Entity{
         logger.log(id+" has left tunnel no. "+riskZoneNo+" and is now inside the refuge");
     }
     private void dropFoodAndRest(){
-        gl.check();
-        refuge.dropFood(food);
-        //log
+        refuge.dropFood(this.food);
+        if(this.food > 0)
+            logger.log(id + " has dropped " + food + " pieces of food in the refuge and is now going to rest");
         this.food = 0;
-        gl.check();
         logger.log(id + " is entering the rest zone");
         refuge.restGate(this, true);
         this.sleep(2000 + random.nextInt(3) * 1000);
@@ -152,7 +150,6 @@ public class Human extends Entity{
     private void eat(){
         logger.log(id + " is entering the dining zone");
         refuge.diningGate(this, true);
-        gl.check();
         refuge.eat();
         logger.log(id + " has got a piece of food and is now eating");
         this.sleep(3000 + random.nextInt(3)*1000);
@@ -162,7 +159,6 @@ public class Human extends Entity{
     private void heal(){
         logger.log(id + " is entering the rest zone for healing");
         refuge.restGate(this, true);
-        gl.check();
         this.sleep(3000 + random.nextInt(3)*1000);
         this.isMarked = false;
         logger.log(id + " has healed and is leaving the rest zone");

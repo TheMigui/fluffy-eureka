@@ -54,7 +54,6 @@ public class Zombie extends Entity{
             logger.log(this.id + " found no one and is waiting to leave");
         }else{
             synchronized(this){
-                logger.log(this.id + " is attacking " + prey.getEntityId());
                 try{
                     this.wait();
                 } catch (InterruptedException e) {

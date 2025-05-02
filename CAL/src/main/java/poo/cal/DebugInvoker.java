@@ -35,6 +35,7 @@ public class DebugInvoker extends Thread {
             h.start();
             try{
                 Thread.sleep(random.nextInt(1501) + 500);
+                gl.check();
             }
             catch (InterruptedException e){
                 e.printStackTrace();

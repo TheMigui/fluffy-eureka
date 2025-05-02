@@ -9,7 +9,9 @@ public class ApocalypseLogger {
     
     private boolean isOpen;
     private BufferedWriter writer;
-    public ApocalypseLogger(){
+    private GlobalLock gl = new GlobalLock();
+    public ApocalypseLogger(GlobalLock gl) {
+        this.gl = gl;
         try {
             File logsFolder = new File("logs");
             if (!logsFolder.exists()) {
@@ -24,8 +26,8 @@ public class ApocalypseLogger {
             e.printStackTrace();
         }
     }
-    public void log(String content){
-        synchronized(this){
+    public synchronized void log(String content){
+            gl.check();
             if(isOpen){
                 try{
                     writer.write(LocalDateTime.now().toString()+": "+content+"\n");
@@ -33,17 +35,14 @@ public class ApocalypseLogger {
                     e.printStackTrace();
                 }
             }
-        }
     }
 
-    public void close(){
-        synchronized(this){
+    public synchronized void close(){
             try {
                 this.isOpen = false;
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
     }
 }
