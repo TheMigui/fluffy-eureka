@@ -82,7 +82,7 @@ public class Human extends Entity{
             zombieAttackSequence();
         }
     }
-    private void zombieAttackSequence(){
+    public void zombieAttackSequence(){
         logger.log(id + " is being attacked by "+ zombieAttacking.getEntityId()+"!!!");
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
         this.sleep(zombieAttacking.getAttackDuration());
@@ -92,6 +92,9 @@ public class Human extends Entity{
             this.isOutside = false;
             this.food = 0;
             logger.log(id + " survived the attack from " + zombieAttacking.getEntityId() + " and is now leaving risk zone no. " + riskZoneNo + ". Phew!");
+            riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
+            riskZones.leave(this, riskZoneNo);
+            this.zombieAttacking = null;
         }
         else{
             logger.log(id + " was killed by "+zombieAttacking.getEntityId() + " and has become the zombie no. " + id.replace('H', 'Z') + ". RIP");
@@ -99,10 +102,10 @@ public class Human extends Entity{
             Zombie newZombie = new Zombie(id.replace('H', 'Z'), gl, logger, riskZones, riskZoneNo);
             threadList.add(newZombie);
             newZombie.start();
+            riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
+            Thread.currentThread().interrupt();
         }
         zombieAttacking.endAttack();
-        riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, true);
-        riskZones.leave(this, riskZoneNo);
         
     }
     public synchronized boolean attackHuman(Zombie z){

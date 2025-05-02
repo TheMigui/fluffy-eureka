@@ -41,12 +41,16 @@ public class Zombie extends Entity{
       int riskZoneNo = random.nextInt(4);
       riskZones.enter(this,riskZoneNo);
     }
-    private void attackZombie(){
-        int riskZoneNo = random.nextInt(4);
-        riskZones.enter(this,riskZoneNo);
+    //Me preocupa lo "synchronized" que esté esto.
+    public synchronized void attackZombie(){
+        RiskZone targetZone = riskZones.getRiskZone(riskZoneNo);
+        Human preyHuman = riskZones.getRandomHuman(riskZoneNo);
+        preyHuman.attackHuman(this);
+        preyHuman.zombieAttackSequence();
+       // riskZones.enter(this,riskZoneNo);
       }
     public synchronized void endAttack(){
-        //El zombie se quedará bloqueado tras atacar al humano, pues es este quien tiene la lógica de ataque. Por lo tanto, esto sirve para desbloquear el zombie tras el ataque
+        this.notify();
     }
 
 

@@ -14,6 +14,9 @@ public class RiskZones {
     public void enter(Entity e, int riskZoneIndex) {
         riskZones[riskZoneIndex - 1].enter(e);
     }
+    public RiskZone getRiskZone(int id){
+        return riskZones[id-1];
+    }
 
     public void leave(Entity e, int riskZoneIndex) {
         riskZones[riskZoneIndex - 1].leave(e);
