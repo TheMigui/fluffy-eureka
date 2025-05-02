@@ -48,13 +48,12 @@ public class Tunnel {
                 waitingForGroupList.remove(0);
             }
             updateTunnelLeavingGui();
-            groupCondition.signalAll();
             arraysLock.unlock();
         });
     }
 
     public void enterTunnel(Human h, boolean isEnteringRefuge) {
-        //CÓDIGO A REFACTORIZAR (SE HA IDO LIANDO)
+        
         try{
             if(isEnteringRefuge){
                 synchronized(this.enteringRefugeList){
@@ -101,7 +100,7 @@ public class Tunnel {
             tunnelFullCondition.signal();
             crossingLock.unlock();
             
-        }catch(Exception e){
+        }catch(InterruptedException | BrokenBarrierException e){
             e.printStackTrace();
         }
         
