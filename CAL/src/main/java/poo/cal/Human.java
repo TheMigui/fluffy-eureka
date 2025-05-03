@@ -106,7 +106,7 @@ public class Human extends Entity{
             logger.log(id + " was killed by "+zombieAttacking.getEntityId() + " and has become the zombie no. " + id.replace('H', 'Z') + ". RIP");
             zombieAttacking.incrementKillCount();
             logger.log(zombieAttacking.getEntityId() + "'s kill count is now " + zombieAttacking.getKillCount());
-            Zombie newZombie = new Zombie(id.replace('H', 'Z'), gl, logger, riskZones, riskZoneNo);
+            Zombie newZombie = new Zombie(id.replace('H', 'Z'), gl, logger, riskZones, zombieAttacking.getZombieRanking(), riskZoneNo);
             newZombie.setDaemon(true);
             threadMap.put(newZombie.getEntityId(), newZombie);
             threadMap.remove(id);

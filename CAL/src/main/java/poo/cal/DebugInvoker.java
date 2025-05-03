@@ -9,11 +9,12 @@ public class DebugInvoker extends Thread {
     private Tunnels tunnels;
     private Refuge refuge;
     private RiskZones riskZones;
+    private ZombieRanking zombieRanking;
     private int howManyHumans = 0;
 
     private Random random = new Random();
 
-    public DebugInvoker(int howManyHumans, Map<String, Entity> threadList, GlobalLock gl, ApocalypseLogger logger, Tunnels tunnels, Refuge refuge, RiskZones riskZones) {
+    public DebugInvoker(int howManyHumans, Map<String, Entity> threadList, GlobalLock gl, ApocalypseLogger logger, Tunnels tunnels, Refuge refuge, RiskZones riskZones, ZombieRanking zombieRanking) {
         this.howManyHumans = howManyHumans;
         this.threadMap = threadList;
         this.gl = gl;
@@ -21,10 +22,11 @@ public class DebugInvoker extends Thread {
         this.tunnels = tunnels;
         this.refuge = refuge;
         this.riskZones = riskZones;
+        this.zombieRanking = zombieRanking;
     }
     @Override
     public void run() {
-        Zombie z = new Zombie("Z0000", gl, logger, riskZones, 1);
+        Zombie z = new Zombie("Z0000", gl, logger, riskZones, zombieRanking, 1);
         z.setDaemon(true);
         threadMap.put("Z0000", z);
         z.start();

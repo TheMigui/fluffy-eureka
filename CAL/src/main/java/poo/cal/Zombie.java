@@ -6,14 +6,16 @@ public class Zombie extends Entity{
     private int riskZoneNo;
     private AtomicInteger killCount = new AtomicInteger(0);
     private int attackDuration = 0;
+    private ZombieRanking zombieRanking;
 
 
 
 
-    public Zombie(String id, GlobalLock gl, ApocalypseLogger logger, RiskZones riskZones, int riskZoneNo){ 
+    public Zombie(String id, GlobalLock gl, ApocalypseLogger logger, RiskZones riskZones, ZombieRanking zombieRanking, int riskZoneNo){ 
         super(id, gl, logger);
         this.riskZones = riskZones;
         this.riskZoneNo = riskZoneNo;
+        this.zombieRanking = zombieRanking;
     }
 
 
@@ -74,8 +76,13 @@ public class Zombie extends Entity{
         return attackDuration;
     }
 
+    public ZombieRanking getZombieRanking() {
+        return zombieRanking;
+    }
+
     public void incrementKillCount(){   
         killCount.incrementAndGet();
+        zombieRanking.applyForRanking(this);
     }
     public int getKillCount(){
         return killCount.get();

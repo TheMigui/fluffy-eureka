@@ -31,9 +31,10 @@ public class Tunnel {
     private Lock crossingLock = new ReentrantLock(true);
     private Condition tunnelFullCondition = crossingLock.newCondition();
     
+    private ReportingAtomicInteger humansInTunnel;
 
 
-    public Tunnel(JTextPane waitingInTextPane, JTextPane crossingTextPane, JTextPane waitingOutTextPane) {
+    public Tunnel(int id, JTextPane waitingInTextPane, JTextPane crossingTextPane, JTextPane waitingOutTextPane, ConnHub hub) {
         this.enteringRefugeList = new GraphicArrayList<>(waitingOutTextPane, Direction.VERTICAL);
         this.crossingTextPane = crossingTextPane;
         this.leavingRefugeOrWaitingTextPane = waitingInTextPane;
@@ -50,10 +51,11 @@ public class Tunnel {
             updateTunnelLeavingGui();
             arraysLock.unlock();
         });
+        this.humansInTunnel = new ReportingAtomicInteger(hub, "Tunnel"+Integer.toString(id));
     }
 
     public void enterTunnel(Human h, boolean isEnteringRefuge) {
-        
+        humansInTunnel.incrementAndReport();
         try{
             if(isEnteringRefuge){
                 synchronized(this.enteringRefugeList){
@@ -104,6 +106,8 @@ public class Tunnel {
             
         }catch(InterruptedException | BrokenBarrierException e){
             e.printStackTrace();
+        }finally{
+            humansInTunnel.decrementAndReport();
         }
         
     }
@@ -128,5 +132,9 @@ public class Tunnel {
             e.printStackTrace();
             leavingRefugeOrWaitingTextPane.setText("Error updating GUI: " + e.getMessage());
         }
+    }
+
+    public int getHumansInTunnel() {
+        return humansInTunnel.get();
     }
 }

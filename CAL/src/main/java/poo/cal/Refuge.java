@@ -12,6 +12,8 @@ public class Refuge  {
     private GraphicArrayList<Human> restArea;
     private GraphicArrayList<Human> diningArea;
     private JTextPane foodTextPane;
+    private ReportingAtomicInteger humansInRefuge = new ReportingAtomicInteger(null,"Refuge");
+
     public Refuge(JTextPane commonTArea, JTextPane diningTArea, JTextPane restTArea, JTextPane foodTextPane){ 
         
         this.commonArea = new GraphicArrayList<>(commonTArea);
@@ -24,8 +26,10 @@ public class Refuge  {
     private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
         if(isEntering){
             list.add(h);
+            humansInRefuge.incrementAndGet();
         }else{
             list.remove(h);
+            humansInRefuge.decrementAndGet();
         }
     }
     public synchronized void commonGate(Human h, boolean isEntering){
@@ -61,8 +65,6 @@ public class Refuge  {
 
         }
     }
-    
-    
 
 
 

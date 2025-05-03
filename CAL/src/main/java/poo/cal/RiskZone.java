@@ -10,6 +10,7 @@ import javax.swing.text.StyledDocument;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 public class RiskZone {
     private ArrayList<Human> humanList = new ArrayList<>();
     private ArrayList<Human> humanBeingAttackedList = new ArrayList<>();
@@ -24,8 +25,11 @@ public class RiskZone {
 
     private Random random = new Random();
 
-    
-    public RiskZone(JTextPane humanTextPane, JTextPane zombieTextPane) {
+    private ReportingAtomicInteger humansInRiskZone;
+    private ReportingAtomicInteger zombiesInRiskZone;
+
+
+    public RiskZone(int id, JTextPane humanTextPane, JTextPane zombieTextPane, ConnHub hub) {
         this.humanTextPane = humanTextPane;
         this.zombieTextPane = zombieTextPane;
         this.normalStyle = humanTextPane.addStyle("Normal", null);
@@ -33,20 +37,27 @@ public class RiskZone {
         this.attackStyle = humanTextPane.addStyle("Attack", null);
         StyleConstants.setForeground(attackStyle, java.awt.Color.RED);
 
+        this.humansInRiskZone = new ReportingAtomicInteger(hub, "RiskZoneHumans"+Integer.toString(id));
+        this.zombiesInRiskZone = new ReportingAtomicInteger(hub, "RiskZoneZombies"+Integer.toString(id));
     }
     public synchronized void enter(Entity e) {
+
            if (e instanceof Human) {
                 humanList.add((Human) e);
+                humansInRiskZone.incrementAndReport();
             } else if (e instanceof Zombie) {
                 zombieList.add((Zombie) e);
+                zombiesInRiskZone.incrementAndReport();
             }
             updateGui();
     }
     public synchronized void leave(Entity e) {
             if (e instanceof Human) {
                 humanList.remove((Human) e);
+                humansInRiskZone.decrementAndReport();
             } else if (e instanceof Zombie) {
                 zombieList.remove((Zombie) e);
+                zombiesInRiskZone.decrementAndReport();
             }
             updateGui();
     }
@@ -113,5 +124,7 @@ public class RiskZone {
             int randomIndex = random.nextInt(humanList.size());
             return humanList.get(randomIndex);
     }
+
+    
 
 }

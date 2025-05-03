@@ -29,22 +29,30 @@ public class CAL extends javax.swing.JFrame {
         //List<Entity> threads = Collections.synchronizedList(new ArrayList<>());
 
         Map<String, Entity> threads = Collections.synchronizedMap(new HashMap<>());
+
+        ApocalypseLogger logger = new ApocalypseLogger(gl);
+        gl.setApocalypseLogger(logger);
+        ConnHub hub = new ConnHub(gl, logger);
         
         Refuge refuge = new Refuge(CommonAreaTP, DiningAreaTP, RestingAreaTP, FoodTP);
 
         JTextPane[] crossingTextPanes = {Tunnel1CrossingTP1, Tunnel2CrossingTP, Tunnel3CrossingTP, Tunnel4CrossingTP};
         JTextPane[] waitingInTextPanes = {Tunnel1LeavingTP1, Tunnel2LeavingTP, Tunnel3LeavingTP, Tunnel4LeavingTP};
         JTextPane[] waitingOutTextPanes = {Tunnel1EnteringTP1, Tunnel2EnteringTP, Tunnel3EnteringTP, Tunnel4EnteringTP};
-        Tunnels tunnels = new Tunnels(waitingInTextPanes, crossingTextPanes, waitingOutTextPanes);
+        Tunnels tunnels = new Tunnels(waitingInTextPanes, crossingTextPanes, waitingOutTextPanes, hub);
 
         JTextPane[] humanTextPanes = {RiskZone1HTP, RiskZone2HTP, RiskZone3HTP, RiskZone4HTP};
         JTextPane[] zombieTextPanes = {RiskZone1ZTP, RiskZone2ZTP, RiskZone3ZTP, RiskZone4ZTP};
-        RiskZones riskZones = new RiskZones(humanTextPanes, zombieTextPanes);
+        RiskZones riskZones = new RiskZones(humanTextPanes, zombieTextPanes, hub);
 
 
-        ApocalypseLogger logger = new ApocalypseLogger(gl);
+        
 
-        (new DebugInvoker(10000, threads, gl, logger, tunnels, refuge, riskZones)).start();
+        
+
+        ZombieRanking zombieRanking = new ZombieRanking(hub);
+
+        (new DebugInvoker(10000, threads, gl, logger, tunnels, refuge, riskZones, zombieRanking)).start();
     }
 
     /**
@@ -635,7 +643,7 @@ public class CAL extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseButtonActionPerformed
-        gl.setOpen(!gl.isOpen());
+        gl.setOpen(!gl.isOpen(), "through the button located in the server GUI");
         PauseButton.setText(gl.isOpen() ? "Pause" : "Resume");
     }//GEN-LAST:event_PauseButtonActionPerformed
 

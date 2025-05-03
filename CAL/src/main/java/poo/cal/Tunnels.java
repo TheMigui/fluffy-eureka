@@ -5,9 +5,9 @@ import javax.swing.JTextPane;
 
 public class Tunnels {
     private Tunnel [] tunnels = new Tunnel[4];
-    public Tunnels (JTextPane crossingTextPanes[], JTextPane waitingInTextPanes[], JTextPane waitingGroupTextPanes[]) {
-        for (int i = 0; i < 4; i++) {
-            tunnels[i] = new Tunnel(crossingTextPanes[i], waitingInTextPanes[i], waitingGroupTextPanes[i]);
+    public Tunnels (JTextPane crossingTextPanes[], JTextPane waitingInTextPanes[], JTextPane waitingGroupTextPanes[], ConnHub hub) {
+        for (int i = 1; i <= 4; i++) {
+            tunnels[i] = new Tunnel(i, crossingTextPanes[i], waitingInTextPanes[i], waitingGroupTextPanes[i], hub);
         }
     }
 
@@ -15,4 +15,11 @@ public class Tunnels {
         tunnels[which-1].enterTunnel(h, isEnteringRefuge);
     }
     
+    public int[] getHumansInTunnels(){
+        int [] humansInTunnels = new int[4];
+        for (int i = 0; i < 4; i++) {
+            humansInTunnels[i] = tunnels[i].getHumansInTunnel();
+        }
+        return humansInTunnels;
+    }
 }

@@ -5,9 +5,9 @@ import javax.swing.JTextPane;
 public class RiskZones {
     private RiskZone riskZones[] = new RiskZone[4];
 
-    public RiskZones(JTextPane humanTextPanes[], JTextPane zombieTextPanes[]) {
-        for (int i = 0; i < riskZones.length; i++) {
-            riskZones[i] = new RiskZone(humanTextPanes[i], zombieTextPanes[i]);
+    public RiskZones(JTextPane humanTextPanes[], JTextPane zombieTextPanes[], ConnHub hub) {
+        for (int i = 1; i <= 4; i++) {
+            riskZones[i] = new RiskZone(i, humanTextPanes[i], zombieTextPanes[i], hub);
         }
     }
 
@@ -29,4 +29,7 @@ public class RiskZones {
     public Human getRandomHuman(int riskZoneIndex) {
         return riskZones[riskZoneIndex - 1].getRandomHuman();
     }
+
+    
+    
 }

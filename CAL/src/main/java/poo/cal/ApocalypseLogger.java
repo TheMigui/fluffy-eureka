@@ -26,8 +26,9 @@ public class ApocalypseLogger {
             e.printStackTrace();
         }
     }
-    public synchronized void log(String content){
-            gl.check();
+    public synchronized void log(String content, boolean ignoreGL){
+            if(!ignoreGL)
+                gl.check();
             if(isOpen){
                 try{
                     writer.write(LocalDateTime.now().toString()+": "+content+"\n");
@@ -35,6 +36,10 @@ public class ApocalypseLogger {
                     e.printStackTrace();
                 }
             }
+    }
+
+    public void log(String content){
+        this.log(content, false);
     }
 
     public synchronized void close(){
