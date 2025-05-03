@@ -6,8 +6,8 @@ import javax.swing.JTextPane;
 public class Tunnels {
     private Tunnel [] tunnels = new Tunnel[4];
     public Tunnels (JTextPane crossingTextPanes[], JTextPane waitingInTextPanes[], JTextPane waitingGroupTextPanes[], ConnHub hub) {
-        for (int i = 1; i <= 4; i++) {
-            tunnels[i] = new Tunnel(i, crossingTextPanes[i], waitingInTextPanes[i], waitingGroupTextPanes[i], hub);
+        for (int i = 0; i < 4; i++) {
+            tunnels[i] = new Tunnel(i+1, crossingTextPanes[i], waitingInTextPanes[i], waitingGroupTextPanes[i], hub);
         }
     }
 

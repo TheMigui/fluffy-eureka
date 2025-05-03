@@ -45,13 +45,13 @@
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="119" max="-2" attributes="0"/>
-                              <Component id="humansInRiskZoneTF2" min="-2" pref="118" max="-2" attributes="0"/>
+                              <Component id="zombiesInRiskZoneTF2" min="-2" pref="118" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Component id="humansInRiskZoneTF3" min="-2" pref="118" max="-2" attributes="0"/>
+                                      <Component id="zombiesInRiskZoneTF3" min="-2" pref="118" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="humansInRiskZoneTF4" min="-2" pref="118" max="-2" attributes="0"/>
+                                      <Component id="zombiesInRiskZoneTF4" min="-2" pref="118" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
@@ -71,10 +71,10 @@
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="humansInTunnelTF5" min="-2" pref="118" max="-2" attributes="0"/>
+                                      <Component id="humansInRiskZoneTF1" min="-2" pref="118" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="humansInRefugeTF" alignment="1" min="-2" pref="118" max="-2" attributes="0"/>
-                                  <Component id="humansInRiskZoneTF1" alignment="1" min="-2" pref="118" max="-2" attributes="0"/>
+                                  <Component id="zombiesInRiskZoneTF1" alignment="1" min="-2" pref="118" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -86,11 +86,11 @@
                                       <Component id="humansInTunnelTF4" min="-2" pref="118" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
-                                      <Component id="humansInTunnelTF6" min="-2" pref="118" max="-2" attributes="0"/>
+                                      <Component id="humansInRiskZoneTF2" min="-2" pref="118" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="humansInTunnelTF7" min="-2" pref="118" max="-2" attributes="0"/>
+                                      <Component id="humansInRiskZoneTF3" min="-2" pref="118" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="humansInTunnelTF8" min="-2" pref="118" max="-2" attributes="0"/>
+                                      <Component id="humansInRiskZoneTF4" min="-2" pref="118" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -130,16 +130,18 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="connStatusTF" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="connectButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                       <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="addrTF" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="portTF" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="changeAddrButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="connStatusTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="connectButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
@@ -160,18 +162,18 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="humansInTunnelTF5" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="humansInTunnelTF6" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="humansInTunnelTF7" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="humansInTunnelTF8" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="humansInRiskZoneTF1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="humansInRiskZoneTF2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="humansInRiskZoneTF3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="humansInRiskZoneTF4" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="zombiesInRiskZoneTF1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="zombiesInRiskZoneTF2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="zombiesInRiskZoneTF3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="zombiesInRiskZoneTF4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
@@ -281,31 +283,6 @@
         <Property name="text" type="java.lang.String" value="Humans in risk zones:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="humansInTunnelTF5">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="humansInTunnelTF6">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="humansInTunnelTF7">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="humansInTunnelTF8">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel8">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Zombies in risk zones:"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JTextField" name="humansInRiskZoneTF1">
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
@@ -322,6 +299,31 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="humansInRiskZoneTF4">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel8">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Zombies in risk zones:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="zombiesInRiskZoneTF1">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="zombiesInRiskZoneTF2">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="zombiesInRiskZoneTF3">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="zombiesInRiskZoneTF4">
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
       </Properties>

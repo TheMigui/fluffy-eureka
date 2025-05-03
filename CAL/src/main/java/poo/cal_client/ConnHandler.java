@@ -46,7 +46,9 @@ public class ConnHandler implements Runnable{
             connectButton.setEnabled(true);
             connectButton.setText("Disconnect");
             connStatusTF.setText("Connected");
-            pauseButton.setEnabled(true);
+            synchronized(pauseButton){
+                pauseButton.setEnabled(true);
+            }
         }catch(IOException e){
             JOptionPane.showMessageDialog(null, "Connection failed: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.isConnected.set(false);
@@ -59,6 +61,17 @@ public class ConnHandler implements Runnable{
                 String message = in.readUTF();
                 if(message.equals("EXIT")){
                     isConnected.set(false);
+                }else if(message.equals("PAUSE")){
+                    synchronized(pauseButton){
+                        simulationStatusTF.setText("Paused");
+                        pauseButton.setText("Resume");
+                    }
+
+                }else if(message.equals("RESUME")){
+                    synchronized(pauseButton){
+                        simulationStatusTF.setText("Running");
+                        pauseButton.setText("Pause");
+                    }
                 }else{
                     String[] parts = message.split("\\|", 2);
                     String statName = parts[0];
@@ -80,8 +93,10 @@ public class ConnHandler implements Runnable{
                 socket.close();
                 connStatusTF.setText("Disconnected");
                 connectButton.setText("Connect");
-                simulationStatusTF.setText("---");
-                pauseButton.setEnabled(false);
+                synchronized(pauseButton){
+                    simulationStatusTF.setText("---");
+                    pauseButton.setEnabled(false);
+                }
             } catch (IOException e) {
                 if (!e.getMessage().contains("Socket closed")) {
                     e.printStackTrace();
@@ -103,6 +118,16 @@ public class ConnHandler implements Runnable{
             isConnected.set(true);
             connectButton.setEnabled(false);
             (new Thread(this)).start();
+        }
+    }
+
+    public void togglePause(){
+        if (isConnected.get()){
+            try {
+                out.writeUTF(pauseButton.getText().toUpperCase());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ public class ConnHub extends Thread{
 
     public ConnHub(GlobalLock gl, ApocalypseLogger logger) {
         this.gl = gl;
+        this.gl.setConnHub(this);
         this.logger = logger;
         try{
             serverSocket = new ServerSocket(5050);
@@ -32,6 +33,7 @@ public class ConnHub extends Thread{
                     connHandlers.add(connHandler);
                 }
                 connectionHandlers.execute(connHandler);
+                connHandler.sendSimulationStatus(this.gl.isOpen());
             }catch (Exception e){
                 logger.log("Error accepting connection: " + e.getMessage());
             }
@@ -61,6 +63,15 @@ public class ConnHub extends Thread{
             }
         }
     }
+
+    public synchronized void updateSimulationStatus(boolean isActive) {
+        synchronized (connHandlers) {
+            for (ConnHandler connHandler : connHandlers) {
+                connHandler.sendSimulationStatus(isActive);
+            }
+        }
+    }
+
 
     public synchronized void closeAllConnections() {
         for (ConnHandler connHandler : connHandlers) {

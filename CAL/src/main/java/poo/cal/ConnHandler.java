@@ -44,9 +44,12 @@ public class ConnHandler implements Runnable{
         } catch (IOException e) {
             if(keepAlive.get()){
                 e.printStackTrace();
+                keepAlive.set(false);
             }
         } finally {
             try {
+                in.close();
+                out.close();
                 socket.close();
             } catch (IOException e) {
                 if (!e.getMessage().contains("Socket closed")) {
@@ -66,11 +69,26 @@ public class ConnHandler implements Runnable{
         }
     }
 
+    public synchronized void sendSimulationStatus(boolean isActive){
+        try {
+            if (isActive) {
+                out.writeUTF("RESUME");
+            } else {
+                out.writeUTF("PAUSE");
+            }
+        } catch (Exception e) {
+            if(keepAlive.get()){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public synchronized void closeConn() {
         
         try {
             out.writeUTF("EXIT");
-            out.flush();
+            in.close();
+            out.close();
             keepAlive.set(false);
             socket.close();
         } catch (Exception e) {

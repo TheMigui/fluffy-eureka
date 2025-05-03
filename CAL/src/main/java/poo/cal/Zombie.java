@@ -48,10 +48,7 @@ public class Zombie extends Entity{
     public synchronized void attackZombie(){
         logger.log(this.id + " is inside Risk Zone no. " + riskZoneNo + " and is looking for fresh meat");
         attackDuration = random.nextInt(1001) + 500;
-        Human prey = riskZones.getRandomHuman(riskZoneNo);
-        while (prey != null && !prey.attackHuman(this)){
-            prey = riskZones.getRandomHuman(riskZoneNo);
-        }
+        Human prey = riskZones.getRandomHuman(riskZoneNo, this);
         if (prey == null){
             logger.log(this.id + " found no one and is waiting to leave");
         }else{

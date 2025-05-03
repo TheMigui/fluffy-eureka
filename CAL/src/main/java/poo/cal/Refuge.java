@@ -12,15 +12,16 @@ public class Refuge  {
     private GraphicArrayList<Human> restArea;
     private GraphicArrayList<Human> diningArea;
     private JTextPane foodTextPane;
-    private ReportingAtomicInteger humansInRefuge = new ReportingAtomicInteger(null,"Refuge");
+    private ReportingAtomicInteger humansInRefuge;
 
-    public Refuge(JTextPane commonTArea, JTextPane diningTArea, JTextPane restTArea, JTextPane foodTextPane){ 
+    public Refuge(JTextPane commonTArea, JTextPane diningTArea, JTextPane restTArea, JTextPane foodTextPane, ConnHub hub) { 
         
         this.commonArea = new GraphicArrayList<>(commonTArea);
         this.restArea = new GraphicArrayList<>(restTArea);
         this.diningArea = new GraphicArrayList<>(diningTArea);
         this.foodTextPane = foodTextPane;
         this.foodTextPane.setText("0");
+        this.humansInRefuge = new ReportingAtomicInteger(hub,"Refuge");
         
     }
     private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){

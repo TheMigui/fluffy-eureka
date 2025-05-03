@@ -4,9 +4,15 @@ package poo.cal;
 public class GlobalLock {
     private boolean isOpen = true;
     private ApocalypseLogger logger;
+    private ConnHub hub;
     public void setApocalypseLogger(ApocalypseLogger logger) {
         this.logger = logger;
     }
+
+    public void setConnHub(ConnHub hub) {
+        this.hub = hub;
+    }
+
     public synchronized void check(){
         while(!isOpen){
             try {
@@ -25,6 +31,7 @@ public class GlobalLock {
         if(isOpen){
             this.notifyAll();
         }
+        hub.updateSimulationStatus(isOpen);
     }
     public void open(String responsible) {
         this.setOpen(true, responsible);

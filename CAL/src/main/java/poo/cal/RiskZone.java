@@ -117,12 +117,19 @@ public class RiskZone {
         }
     }
 
-    public synchronized Human getRandomHuman(){
+    public synchronized Human getRandomHuman(Zombie z){
             if(humanList.isEmpty()){
                 return null;
             }
             int randomIndex = random.nextInt(humanList.size());
-            return humanList.get(randomIndex);
+            int lastIndex = randomIndex;
+            boolean success = humanList.get(randomIndex).attackHuman(z);
+            randomIndex = (randomIndex + 1) % humanList.size();
+            while(!success && randomIndex != lastIndex){
+                success = humanList.get(randomIndex).attackHuman(z);
+                randomIndex = (randomIndex + 1) % humanList.size();
+            }
+            return success ? humanList.get(randomIndex) : null;
     }
 
     

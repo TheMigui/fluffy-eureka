@@ -34,7 +34,7 @@ public class CAL extends javax.swing.JFrame {
         gl.setApocalypseLogger(logger);
         ConnHub hub = new ConnHub(gl, logger);
         
-        Refuge refuge = new Refuge(CommonAreaTP, DiningAreaTP, RestingAreaTP, FoodTP);
+        Refuge refuge = new Refuge(CommonAreaTP, DiningAreaTP, RestingAreaTP, FoodTP, hub);
 
         JTextPane[] crossingTextPanes = {Tunnel1CrossingTP1, Tunnel2CrossingTP, Tunnel3CrossingTP, Tunnel4CrossingTP};
         JTextPane[] waitingInTextPanes = {Tunnel1LeavingTP1, Tunnel2LeavingTP, Tunnel3LeavingTP, Tunnel4LeavingTP};
@@ -53,6 +53,7 @@ public class CAL extends javax.swing.JFrame {
         ZombieRanking zombieRanking = new ZombieRanking(hub);
 
         (new DebugInvoker(10000, threads, gl, logger, tunnels, refuge, riskZones, zombieRanking)).start();
+        hub.start();
     }
 
     /**

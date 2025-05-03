@@ -4,6 +4,10 @@
  */
 package poo.cal_client;
 
+import java.util.HashMap;
+
+import javax.swing.text.JTextComponent;
+
 /**
  *
  * @author perez
@@ -15,12 +19,32 @@ public class CAL_client extends javax.swing.JFrame {
      */
     private String serverAddr = "127.0.0.1";
     private int serverPort = 5050;
+    private ConnHandler connHandler;
     public CAL_client() {
         initComponents();
         addrTF.setText(serverAddr);
         portTF.setText(Integer.toString(serverPort));
         connStatusTF.setText("Disconnected");
         simulationStatusTF.setText("---");
+
+        HashMap<String, JTextComponent> statFields = new HashMap<>();
+        statFields.put("Refuge", humansInRefugeTF);
+        statFields.put("Tunnel1", humansInTunnelTF1);
+        statFields.put("Tunnel2", humansInTunnelTF2);
+        statFields.put("Tunnel3", humansInTunnelTF3);
+        statFields.put("Tunnel4", humansInTunnelTF4);
+        statFields.put("RiskZoneHumans1", humansInRiskZoneTF1);
+        statFields.put("RiskZoneHumans2", humansInRiskZoneTF2);
+        statFields.put("RiskZoneHumans3", humansInRiskZoneTF3);
+        statFields.put("RiskZoneHumans4", humansInRiskZoneTF4);
+        statFields.put("RiskZoneZombies1", zombiesInRiskZoneTF1);
+        statFields.put("RiskZoneZombies2", zombiesInRiskZoneTF2);
+        statFields.put("RiskZoneZombies3", zombiesInRiskZoneTF3);
+        statFields.put("RiskZoneZombies4", zombiesInRiskZoneTF4);
+        statFields.put("ZombieRanking", top3TA);
+        
+        connHandler = new ConnHandler(serverAddr, serverPort, connectButton, connStatusTF, simulationStatusTF, pauseButton, statFields);
+
     }
 
     /**
@@ -49,15 +73,15 @@ public class CAL_client extends javax.swing.JFrame {
         humansInTunnelTF3 = new javax.swing.JTextField();
         humansInTunnelTF4 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        humansInTunnelTF5 = new javax.swing.JTextField();
-        humansInTunnelTF6 = new javax.swing.JTextField();
-        humansInTunnelTF7 = new javax.swing.JTextField();
-        humansInTunnelTF8 = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
         humansInRiskZoneTF1 = new javax.swing.JTextField();
         humansInRiskZoneTF2 = new javax.swing.JTextField();
         humansInRiskZoneTF3 = new javax.swing.JTextField();
         humansInRiskZoneTF4 = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        zombiesInRiskZoneTF1 = new javax.swing.JTextField();
+        zombiesInRiskZoneTF2 = new javax.swing.JTextField();
+        zombiesInRiskZoneTF3 = new javax.swing.JTextField();
+        zombiesInRiskZoneTF4 = new javax.swing.JTextField();
         pauseButton = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -107,16 +131,6 @@ public class CAL_client extends javax.swing.JFrame {
 
         jLabel7.setText("Humans in risk zones:");
 
-        humansInTunnelTF5.setEditable(false);
-
-        humansInTunnelTF6.setEditable(false);
-
-        humansInTunnelTF7.setEditable(false);
-
-        humansInTunnelTF8.setEditable(false);
-
-        jLabel8.setText("Zombies in risk zones:");
-
         humansInRiskZoneTF1.setEditable(false);
 
         humansInRiskZoneTF2.setEditable(false);
@@ -124,6 +138,16 @@ public class CAL_client extends javax.swing.JFrame {
         humansInRiskZoneTF3.setEditable(false);
 
         humansInRiskZoneTF4.setEditable(false);
+
+        jLabel8.setText("Zombies in risk zones:");
+
+        zombiesInRiskZoneTF1.setEditable(false);
+
+        zombiesInRiskZoneTF2.setEditable(false);
+
+        zombiesInRiskZoneTF3.setEditable(false);
+
+        zombiesInRiskZoneTF4.setEditable(false);
 
         pauseButton.setText("Pause");
         pauseButton.setEnabled(false);
@@ -177,13 +201,13 @@ public class CAL_client extends javax.swing.JFrame {
                                         .addComponent(jLabel9)
                                         .addComponent(jLabel8)))
                                 .addGap(119, 119, 119)
-                                .addComponent(humansInRiskZoneTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(zombiesInRiskZoneTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(humansInRiskZoneTF3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(zombiesInRiskZoneTF3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(humansInRiskZoneTF4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(zombiesInRiskZoneTF4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel4)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -198,9 +222,9 @@ public class CAL_client extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel7)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(humansInTunnelTF5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(humansInRiskZoneTF1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(humansInRefugeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(humansInRiskZoneTF1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(zombiesInRiskZoneTF1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -210,11 +234,11 @@ public class CAL_client extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(humansInTunnelTF4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(humansInTunnelTF6, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(humansInRiskZoneTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(humansInTunnelTF7, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(humansInRiskZoneTF3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(humansInTunnelTF8, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                        .addComponent(humansInRiskZoneTF4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(293, 293, 293)
                         .addComponent(jLabel1))
@@ -244,16 +268,17 @@ public class CAL_client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(connStatusTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(connectButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(addrTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3)
                         .addComponent(portTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(changeAddrButton)))
+                        .addComponent(changeAddrButton))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(connStatusTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(connectButton)))
                 .addGap(26, 26, 26)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -270,17 +295,17 @@ public class CAL_client extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(humansInTunnelTF5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(humansInTunnelTF6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(humansInTunnelTF7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(humansInTunnelTF8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
                     .addComponent(humansInRiskZoneTF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(humansInRiskZoneTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(humansInRiskZoneTF3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(humansInRiskZoneTF4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(zombiesInRiskZoneTF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(zombiesInRiskZoneTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(zombiesInRiskZoneTF3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(zombiesInRiskZoneTF4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(53, 53, 53)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -299,11 +324,11 @@ public class CAL_client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
-        // TODO add your handling code here:
+        connHandler.toggleConnection();
     }//GEN-LAST:event_connectButtonActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-        // TODO add your handling code here:
+        connHandler.togglePause();
     }//GEN-LAST:event_pauseButtonActionPerformed
 
     private void changeAddrButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeAddrButtonActionPerformed
@@ -366,10 +391,6 @@ public class CAL_client extends javax.swing.JFrame {
     private javax.swing.JTextField humansInTunnelTF2;
     private javax.swing.JTextField humansInTunnelTF3;
     private javax.swing.JTextField humansInTunnelTF4;
-    private javax.swing.JTextField humansInTunnelTF5;
-    private javax.swing.JTextField humansInTunnelTF6;
-    private javax.swing.JTextField humansInTunnelTF7;
-    private javax.swing.JTextField humansInTunnelTF8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -387,5 +408,9 @@ public class CAL_client extends javax.swing.JFrame {
     private javax.swing.JTextField portTF;
     private javax.swing.JTextField simulationStatusTF;
     private javax.swing.JTextArea top3TA;
+    private javax.swing.JTextField zombiesInRiskZoneTF1;
+    private javax.swing.JTextField zombiesInRiskZoneTF2;
+    private javax.swing.JTextField zombiesInRiskZoneTF3;
+    private javax.swing.JTextField zombiesInRiskZoneTF4;
     // End of variables declaration//GEN-END:variables
 }
