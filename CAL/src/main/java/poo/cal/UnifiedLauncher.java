@@ -19,16 +19,17 @@ public class UnifiedLauncher {
                 .start();
                 clients[i] = clientProcess;
             }
-            serverProcess.waitFor();
-            for (int i = 0; i < howManyClients; i++){
-                clients[i].waitFor();
-            }
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 serverProcess.destroy();
                 for (int i = 0; i < howManyClients; i++){
                     clients[i].destroy();
                 }
             }));
+            serverProcess.waitFor();
+            for (int i = 0; i < howManyClients; i++){
+                clients[i].waitFor();
+            }
+
             
         } catch (Exception e) {
             e.printStackTrace();

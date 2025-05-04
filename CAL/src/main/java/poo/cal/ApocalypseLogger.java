@@ -13,7 +13,7 @@ public class ApocalypseLogger {
     
     private boolean isOpen;
     private BufferedWriter writer;
-    private GlobalLock gl = new GlobalLock();
+    private GlobalLock gl;
     public ApocalypseLogger(GlobalLock gl) {
         this.gl = gl;
         try {

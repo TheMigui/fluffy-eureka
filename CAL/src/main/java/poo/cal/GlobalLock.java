@@ -7,9 +7,12 @@ public class GlobalLock {
     private ApocalypseLogger logger;
     private ConnHub hub;
     private JButton pauseButton;
-    public void setApocalypseLogger(ApocalypseLogger logger, JButton pauseButton) {
-        this.logger = logger;
+
+    public GlobalLock(JButton pauseButton){
         this.pauseButton = pauseButton;
+    }
+    public void setApocalypseLogger(ApocalypseLogger logger) {
+        this.logger = logger;
     }
 
     public void setConnHub(ConnHub hub) {

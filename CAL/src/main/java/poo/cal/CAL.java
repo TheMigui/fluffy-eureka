@@ -23,15 +23,16 @@ public class CAL extends javax.swing.JFrame {
     /**
      * Creates new form CAL
      */
-    private GlobalLock gl = new GlobalLock();
+    private GlobalLock gl;
     public CAL() {
         initComponents();
         //List<Entity> threads = Collections.synchronizedList(new ArrayList<>());
 
         Map<String, Entity> threads = Collections.synchronizedMap(new HashMap<>());
 
+        gl = new GlobalLock(PauseButton);
         ApocalypseLogger logger = new ApocalypseLogger(gl);
-        gl.setApocalypseLogger(logger, PauseButton);
+        gl.setApocalypseLogger(logger);
         ConnHub hub = new ConnHub(gl, logger);
         
         Refuge refuge = new Refuge(CommonAreaTP, DiningAreaTP, RestingAreaTP, FoodTP, hub);
