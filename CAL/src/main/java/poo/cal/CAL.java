@@ -31,7 +31,7 @@ public class CAL extends javax.swing.JFrame {
         Map<String, Entity> threads = Collections.synchronizedMap(new HashMap<>());
 
         ApocalypseLogger logger = new ApocalypseLogger(gl);
-        gl.setApocalypseLogger(logger);
+        gl.setApocalypseLogger(logger, PauseButton);
         ConnHub hub = new ConnHub(gl, logger);
         
         Refuge refuge = new Refuge(CommonAreaTP, DiningAreaTP, RestingAreaTP, FoodTP, hub);
@@ -645,7 +645,6 @@ public class CAL extends javax.swing.JFrame {
 
     private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseButtonActionPerformed
         gl.setOpen(!gl.isOpen(), "through the button located in the server GUI");
-        PauseButton.setText(gl.isOpen() ? "Pause" : "Resume");
     }//GEN-LAST:event_PauseButtonActionPerformed
 
     /**

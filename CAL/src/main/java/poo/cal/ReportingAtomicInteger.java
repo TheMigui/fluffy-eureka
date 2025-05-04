@@ -10,6 +10,7 @@ public class ReportingAtomicInteger extends AtomicInteger{
         super(0);
         this.hub = hub;
         this.statName = statName;
+        hub.addStat(this);
     }
     
 
@@ -24,5 +25,9 @@ public class ReportingAtomicInteger extends AtomicInteger{
         int value = super.decrementAndGet();
         hub.updateStat(statName, value);
         return value;
+    }
+
+    public String getStatName() {
+        return statName;
     }
 }

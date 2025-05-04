@@ -114,6 +114,7 @@ public class Human extends Entity{
 
         }
         riskZones.notifyAttack(this, zombieAttacking, riskZoneNo, false);
+        riskZones.leave(this, riskZoneNo);
         zombieAttacking.endAttack();
         zombieAttacking = null;
     }

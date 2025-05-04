@@ -1,12 +1,15 @@
 package poo.cal;
 
+import javax.swing.JButton;
 
 public class GlobalLock {
     private boolean isOpen = true;
     private ApocalypseLogger logger;
     private ConnHub hub;
-    public void setApocalypseLogger(ApocalypseLogger logger) {
+    private JButton pauseButton;
+    public void setApocalypseLogger(ApocalypseLogger logger, JButton pauseButton) {
         this.logger = logger;
+        this.pauseButton = pauseButton;
     }
 
     public void setConnHub(ConnHub hub) {
@@ -32,6 +35,7 @@ public class GlobalLock {
             this.notifyAll();
         }
         hub.updateSimulationStatus(isOpen);
+        pauseButton.setText(isOpen ? "Pause" : "Resume");
     }
     public void open(String responsible) {
         this.setOpen(true, responsible);

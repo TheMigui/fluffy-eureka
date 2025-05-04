@@ -10,6 +10,7 @@ public class ZombieRanking {
 
     public ZombieRanking(ConnHub hub) {
         this.hub = hub;
+        this.hub.addZombieRanking(this);
     }
 
     public synchronized void applyForRanking(Zombie z){
@@ -24,14 +25,19 @@ public class ZombieRanking {
             updateRanking();
         }
     }
-
-    public void updateRanking(){
+    public synchronized String getRanking(){
         ArrayList<Zombie> zombies = new ArrayList<>(top3zombies);
         zombies.sort((z1, z2) -> Integer.compare(z2.getKillCount(), z1.getKillCount()));
         StringBuilder ranking = new StringBuilder();
         for (Zombie z : zombies) {
             ranking.append(z.getEntityId()).append(" - ").append(z.getKillCount()).append("\n");
         }
-        hub.updateStat(statName, ranking.toString());
+        return ranking.toString();
+    }
+    public void updateRanking(){
+        hub.updateStat(statName, this.getRanking());
+    }
+    public String getStatName() {
+        return statName;
     }
 }

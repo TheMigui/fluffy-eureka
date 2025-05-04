@@ -2,6 +2,7 @@ package poo.cal;
 
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,6 +13,8 @@ public class ConnHub extends Thread{
     private ArrayList<ConnHandler> connHandlers = new ArrayList<>();
     private ExecutorService connectionHandlers= Executors.newCachedThreadPool();
     private ServerSocket serverSocket;
+    private HashMap<String, ReportingAtomicInteger> stats = new HashMap<>();
+    private ZombieRanking zombieRanking;
 
     public ConnHub(GlobalLock gl, ApocalypseLogger logger) {
         this.gl = gl;
@@ -34,10 +37,25 @@ public class ConnHub extends Thread{
                 }
                 connectionHandlers.execute(connHandler);
                 connHandler.sendSimulationStatus(this.gl.isOpen());
+                synchronized (stats) {
+                    for (ReportingAtomicInteger stat : stats.values()) {
+                        connHandler.sendStat(stat.getStatName(), Integer.toString(stat.get()));
+                    }
+                }
+                connHandler.sendStat(zombieRanking.getStatName(), zombieRanking.getRanking());
             }catch (Exception e){
                 logger.log("Error accepting connection: " + e.getMessage());
             }
         }
+    }
+
+    public void addStat(ReportingAtomicInteger stat) {
+        synchronized (stats) {
+            stats.put(stat.getStatName(), stat);
+        }
+    }
+    public void addZombieRanking(ZombieRanking ranking) {
+        this.zombieRanking = ranking;
     }
 
     public void closeGL(String addr){

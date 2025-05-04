@@ -36,6 +36,22 @@ public class ConnHandler implements Runnable{
         this.simulationStatusTF = simulationStatusTF;
         this.pauseButton = pauseButton;
         this.statFields = statFields;
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                if (isConnected.get()) {
+                    out.writeUTF("EXIT");
+                    out.flush();
+                    in.close();
+                    out.close();
+                    socket.close();
+                    isConnected.set(false);
+                }
+            } catch (IOException e) {
+                if (!e.getMessage().contains("Socket closed")) {
+                    e.printStackTrace();
+                }
+            }
+        }));
     }
     @Override
     public void run(){

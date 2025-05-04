@@ -27,10 +27,10 @@ public class Refuge  {
     private void enteringProcedure(GraphicArrayList<Human> list, Human h, boolean isEntering){
         if(isEntering){
             list.add(h);
-            humansInRefuge.incrementAndGet();
+            humansInRefuge.incrementAndReport();
         }else{
             list.remove(h);
-            humansInRefuge.decrementAndGet();
+            humansInRefuge.decrementAndReport();
         }
     }
     public synchronized void commonGate(Human h, boolean isEntering){
