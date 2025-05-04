@@ -36,6 +36,7 @@ public class GraphicArrayList<T> extends ArrayList<T> {
         for (T element : this) {
             sb.append(element.toString()).append(direction == Direction.HORIZONTAL ? " " : "\n");
         }
-        textPane.setText(sb.toString());
+        String finalResult = sb.toString();
+        textPane.setText(finalResult);
     }
 }

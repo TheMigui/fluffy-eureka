@@ -75,6 +75,7 @@ public class ConnHandler implements Runnable{
         try{
             while (isConnected.get()){
                 String message = in.readUTF();
+                
                 if(message.equals("EXIT")){
                     isConnected.set(false);
                 }else if(message.equals("PAUSE")){
@@ -107,15 +108,17 @@ public class ConnHandler implements Runnable{
                 in.close();
                 out.close();
                 socket.close();
+
+            } catch (IOException e) {
+                if (!e.getMessage().contains("Socket closed")) {
+                    e.printStackTrace();
+                }
+            }finally{
                 connStatusTF.setText("Disconnected");
                 connectButton.setText("Connect");
                 synchronized(pauseButton){
                     simulationStatusTF.setText("---");
                     pauseButton.setEnabled(false);
-                }
-            } catch (IOException e) {
-                if (!e.getMessage().contains("Socket closed")) {
-                    e.printStackTrace();
                 }
             }
         }

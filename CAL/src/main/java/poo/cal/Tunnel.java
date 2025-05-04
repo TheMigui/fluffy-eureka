@@ -47,8 +47,10 @@ public class Tunnel {
             for (int i = 0; i < 3; i++) {
                 leavingRefugeList.add(waitingForGroupList.get(0));
                 waitingForGroupList.remove(0);
+                groupCondition.signal();
             }
             updateTunnelLeavingGui();
+            
             arraysLock.unlock();
         });
         this.humansInTunnel = new ReportingAtomicInteger(hub, "Tunnel"+Integer.toString(id));
@@ -83,51 +85,49 @@ public class Tunnel {
                     enteringRefugeList.remove(h);
                 }
             }else{
-                arraysLock.lock();
-                groupCondition.signal();
                 while(humanCrossing != null || (!isEnteringRefuge && !enteringRefugeList.isEmpty())){
-                    arraysLock.unlock();
                     tunnelFullCondition.await();
-                    arraysLock.lock();
                 }
+                arraysLock.lock();
                 leavingRefugeList.remove(h);
                 updateTunnelLeavingGui();
                 arraysLock.unlock();
             }
             humanCrossing = h;
-            crossingTextPane.setText(humanCrossing.getEntityId());
+            crossingTextPane.setText(humanCrossing.getEntityId()+(isEnteringRefuge ? " (<-)" : " (->)"));
 
             humanCrossing.sleep(1000);
 
             crossingTextPane.setText("");
             humanCrossing = null;
             tunnelFullCondition.signal();
-            crossingLock.unlock();
+            
             
         }catch(InterruptedException | BrokenBarrierException e){
             e.printStackTrace();
         }finally{
             humansInTunnel.decrementAndReport();
+            crossingLock.unlock();
         }
         
     }
     public synchronized void updateTunnelLeavingGui(){
         try{
-            leavingRefugeOrWaitingTextPane.setText("");
-            StyledDocument doc = leavingRefugeOrWaitingTextPane.getStyledDocument();
-
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sbLeavingRefuge = new StringBuilder();
             for (Human h : leavingRefugeList) {
-                sb.append(h.getEntityId()).append("\n");
+                sbLeavingRefuge.append(h.getEntityId()).append("\n");
             }
-            
-            doc.insertString(doc.getLength(), sb.toString(), alreadyInGroupStyle);
-    
-            sb = new StringBuilder();
+            StringBuilder sbWaitingForGroup = new StringBuilder();
             for (Human h : waitingForGroupList) {
-                sb.append(h.getEntityId()).append("\n");
+                sbWaitingForGroup.append(h.getEntityId()).append("\n");
             }
-            doc.insertString(doc.getLength(), sb.toString(), waitingForGroupStyle);
+
+            
+            StyledDocument doc = leavingRefugeOrWaitingTextPane.getStyledDocument();
+            leavingRefugeOrWaitingTextPane.setText("");
+
+            doc.insertString(doc.getLength(), sbLeavingRefuge.toString(), alreadyInGroupStyle);
+            doc.insertString(doc.getLength(), sbWaitingForGroup.toString(), waitingForGroupStyle);
         }catch(BadLocationException e){
             e.printStackTrace();
             leavingRefugeOrWaitingTextPane.setText("Error updating GUI: " + e.getMessage());

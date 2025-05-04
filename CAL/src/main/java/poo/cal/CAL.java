@@ -52,7 +52,8 @@ public class CAL extends javax.swing.JFrame {
 
         ZombieRanking zombieRanking = new ZombieRanking(hub);
 
-        (new DebugInvoker(10000, threads, gl, logger, tunnels, refuge, riskZones, zombieRanking)).start();
+        (new HumanGenerator(10000, threads, gl, logger, tunnels, refuge, riskZones, zombieRanking)).start();
+        hub.setDaemon(true);
         hub.start();
     }
 

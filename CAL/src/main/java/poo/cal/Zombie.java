@@ -19,8 +19,9 @@ public class Zombie extends Entity{
     }
 
 
-
+    @Override
     public void run(){
+        super.run();
         enterDangerZone();
         this.sleep(2000 + random.nextInt(2)*1000);
         leaveDangerZone();

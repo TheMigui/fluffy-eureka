@@ -79,36 +79,37 @@ public class RiskZone {
 
     private void updateGui() {
         try{
-            humanTextPane.setText("");
 
-            StyledDocument humanDoc = humanTextPane.getStyledDocument();
-
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sbHumansBeingAttacked = new StringBuilder();
             for (Human h : humanBeingAttackedList) {
-                sb.append(h.getEntityId()).append("\n");
+                sbHumansBeingAttacked .append(h.getEntityId()).append("\n");
             }
-            humanDoc.insertString(humanDoc.getLength(), sb.toString(), attackStyle);
 
-            sb = new StringBuilder();
+            StringBuilder sbHumans = new StringBuilder();
             for (Human h : humanList) {
-                sb.append(h.getEntityId()).append("\n");
+                sbHumans.append(h.getEntityId()).append("\n");
             }
-            humanDoc.insertString(humanDoc.getLength(), sb.toString(), normalStyle);
 
-            StyledDocument zombieDoc = zombieTextPane.getStyledDocument();
-
-            zombieTextPane.setText("");
-            sb = new StringBuilder();
+            StringBuilder sbZombiesAttacking = new StringBuilder();
             for (Zombie z : zombieAttackingList) {
-                sb.append(z.getEntityId()).append("\n");
+                sbZombiesAttacking.append(z.getEntityId()).append("\n");
             }
-            zombieDoc.insertString(zombieDoc.getLength(), sb.toString(), attackStyle);
 
-            sb = new StringBuilder();
+            StringBuilder sbZombies = new StringBuilder();
             for (Zombie z : zombieList) {
-                sb.append(z.getEntityId()).append("\n");
+                sbZombies.append(z.getEntityId()).append("\n");
             }
-            zombieDoc.insertString(zombieDoc.getLength(), sb.toString(), normalStyle);
+
+            humanTextPane.setText("");
+            StyledDocument humanDoc = humanTextPane.getStyledDocument();
+            humanDoc.insertString(humanDoc.getLength(), sbHumansBeingAttacked .toString(), attackStyle);
+            humanDoc.insertString(humanDoc.getLength(), sbHumans.toString(), normalStyle);
+
+            
+            StyledDocument zombieDoc = zombieTextPane.getStyledDocument();
+            zombieTextPane.setText("");
+            zombieDoc.insertString(zombieDoc.getLength(), sbZombiesAttacking.toString(), attackStyle);
+            zombieDoc.insertString(zombieDoc.getLength(), sbZombies.toString(), normalStyle);
             
         }catch (BadLocationException e) {
             e.printStackTrace();

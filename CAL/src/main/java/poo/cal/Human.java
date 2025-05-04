@@ -39,6 +39,7 @@ public class Human extends Entity{
     
     @Override
     public void run(){
+        super.run();
         while(isAlive){
             prepare();
             leaveRefuge();

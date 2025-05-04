@@ -2,7 +2,7 @@ package poo.cal;
 
 import java.util.Map;
 import java.util.Random;
-public class DebugInvoker extends Thread {
+public class HumanGenerator extends Thread {
     private Map<String, Entity> threadMap;
     private GlobalLock gl;
     private ApocalypseLogger logger;
@@ -14,7 +14,7 @@ public class DebugInvoker extends Thread {
 
     private Random random = new Random();
 
-    public DebugInvoker(int howManyHumans, Map<String, Entity> threadList, GlobalLock gl, ApocalypseLogger logger, Tunnels tunnels, Refuge refuge, RiskZones riskZones, ZombieRanking zombieRanking) {
+    public HumanGenerator(int howManyHumans, Map<String, Entity> threadList, GlobalLock gl, ApocalypseLogger logger, Tunnels tunnels, Refuge refuge, RiskZones riskZones, ZombieRanking zombieRanking) {
         this.howManyHumans = howManyHumans;
         this.threadMap = threadList;
         this.gl = gl;
@@ -36,12 +36,12 @@ public class DebugInvoker extends Thread {
             h.setDaemon(true);
             h.start();
             try{
-                Thread.sleep(random.nextInt(1501) + 500);
-                gl.check();
+                Thread.sleep(1);//random.nextInt(1501) + 500);
             }
             catch (InterruptedException e){
                 e.printStackTrace();
             }
+            gl.check();
         }
 
         

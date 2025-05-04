@@ -16,7 +16,11 @@ public abstract class Entity extends Thread {
         this.logger = logger;
     }
 
-    abstract public void run();
+    @Override
+    public void run(){
+        Thread.currentThread().setName(this.getEntityId());
+        gl.check();
+    }
 
     public String getEntityId() {
         return id;
@@ -36,6 +40,8 @@ public abstract class Entity extends Thread {
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     public String toString(){
