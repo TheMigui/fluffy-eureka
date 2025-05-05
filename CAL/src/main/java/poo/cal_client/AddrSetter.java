@@ -21,6 +21,10 @@ public class AddrSetter extends javax.swing.JDialog {
         initComponents();
     }
 
+    /**
+     * isOk
+     * @return true if the entry was confirmed, false otherwise
+     */
     public boolean isOk() {
         return ok;
     }
