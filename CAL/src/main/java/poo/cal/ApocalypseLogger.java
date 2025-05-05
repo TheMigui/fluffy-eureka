@@ -7,7 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 public class ApocalypseLogger {
     /*
-     * AppocalypseLogger is a singleton class that handles logging for the simulation.
+     * AppocalypseLogger is a class that handles logging for the simulation.
      * 
      * All threads that wish to log something should call the synchronized log method of this class.
      */

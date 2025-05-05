@@ -21,14 +21,22 @@ public class Human extends Entity{
     private boolean isAlive = true;
     private boolean isOutside = false;
     private int food = 0;
-    private int riskZoneNo = 0; // This represents the random risk zone
-                                // (and tunnel) the human has selected
     private Zombie attackingZombie = null;
     private Map<String, Entity> threadMap; // Map of all threads in the simulation, used for interruptions
 
     private Lock gatherLock = new ReentrantLock(); // This lock is used while the human is outside, so changes to shared
                                                    // variables between the human and the zombie are synchronized
 
+    /**
+     * Human constructor
+     * @param id
+     * @param gl
+     * @param logger
+     * @param threadMap
+     * @param refuge
+     * @param tunnels
+     * @param riskZones
+     */
     public Human(String id, GlobalLock gl, ApocalypseLogger logger, Map<String, Entity> threadMap, Refuge refuge, Tunnels tunnels, RiskZones riskZones) {
         super(id, gl, logger);
         this.threadMap = threadMap;
@@ -45,9 +53,7 @@ public class Human extends Entity{
             return super.getEntityId();
     }
 
-    public int getriskZoneNo() {
-        return riskZoneNo; // Every time the human finishes preparing, it chooses a risk zone (and tunnel) number randomly
-    }
+
 
     @Override
 

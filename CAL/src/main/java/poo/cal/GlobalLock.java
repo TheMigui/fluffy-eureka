@@ -6,7 +6,7 @@ public class GlobalLock {
     /*
      * GlobalLock (Global Lock)
      * 
-     * GlobalLock is a singleton class that handles the pause/resume functionality of the simulation.
+     * GlobalLock is a class that handles the pause/resume functionality of the simulation.
      * 
      * When the simulation is paused, all threads that call the check() method will be blocked until the simulation is resumed.
      * 

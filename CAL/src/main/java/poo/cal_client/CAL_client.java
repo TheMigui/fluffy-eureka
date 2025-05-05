@@ -17,13 +17,11 @@ public class CAL_client extends javax.swing.JFrame {
     /**
      * Creates new form CAL_client
      */
-    private String serverAddr = "127.0.0.1";
-    private int serverPort = 5050;
     private ConnHandler connHandler;
     public CAL_client() {
         initComponents();
-        addrTF.setText(serverAddr);
-        portTF.setText(Integer.toString(serverPort));
+        addrTF.setText("127.0.0.1");
+        portTF.setText(Integer.toString(5050));
         connStatusTF.setText("Disconnected");
         simulationStatusTF.setText("---");
 
@@ -43,7 +41,7 @@ public class CAL_client extends javax.swing.JFrame {
         statFields.put("RiskZoneZombies4", zombiesInRiskZoneTF4);
         statFields.put("ZombieRanking", top3TA);
         
-        connHandler = new ConnHandler(serverAddr, serverPort, connectButton, connStatusTF, simulationStatusTF, pauseButton, statFields);
+        connHandler = new ConnHandler(connectButton, connStatusTF, simulationStatusTF, pauseButton, statFields);
 
     }
 
@@ -338,11 +336,14 @@ public class CAL_client extends javax.swing.JFrame {
     private void changeAddrButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeAddrButtonActionPerformed
         AddrSetter addrSetter = new AddrSetter(this, true);
         addrSetter.setVisible(true);
+
         if(addrSetter.isOk()){
-            serverAddr = addrSetter.getAddr();
-            serverPort = addrSetter.getPort();
-            addrTF.setText(serverAddr);
-            portTF.setText(Integer.toString(serverPort));
+
+            connHandler.setServerAddr(addrSetter.getAddr());
+            connHandler.setServerPort(addrSetter.getPort());
+
+            addrTF.setText(addrSetter.getAddr());
+            portTF.setText(Integer.toString(addrSetter.getPort()));
         }
     }//GEN-LAST:event_changeAddrButtonActionPerformed
 

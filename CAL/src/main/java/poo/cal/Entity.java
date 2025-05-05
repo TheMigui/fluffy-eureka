@@ -15,6 +15,7 @@ public abstract class Entity extends Thread {
     protected Random random = new Random();
     protected ApocalypseLogger logger;
     protected int delta = 100;
+    protected int riskZoneNo; // This represents the risk zone the entity is in / wants to enter / is leaving from.
     
     /**
      * Entity constructor.
@@ -51,6 +52,9 @@ public abstract class Entity extends Thread {
                                 // the human has been marked by a zombie)
                                 // getCleanId returns the id without this extra information.
         return id;
+    }
+    public int getriskZoneNo() {
+        return riskZoneNo; 
     }
 
     /**
