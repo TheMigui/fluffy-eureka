@@ -21,9 +21,9 @@ public abstract class Entity extends Thread {
      * Entity constructor.
      * 
      * It initializes the id, GlobalLock and ApocalypseLogger instances.
-     * @param id
-     * @param gl
-     * @param logger
+     * @param id The id of the entity ("H0001", "Z1234"...)
+     * @param gl GlobalLock instance used for checking if the simulation is paused
+     * @param logger ApocalypseLogger instance used for logging events
      */
     public Entity(String id, GlobalLock gl, ApocalypseLogger logger) {
         this.id = id;
