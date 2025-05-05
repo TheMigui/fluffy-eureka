@@ -4,6 +4,13 @@ import javax.swing.JTextPane;
 
 
 public class Tunnels {
+    /*
+     * Tunnels
+     * 
+     * This is a wrapper class for the 4 tunnels, in order to make it easier to manage them.
+     * 
+     * It is very similar to the RiskZones class
+     */
     private Tunnel [] tunnels = new Tunnel[4];
     public Tunnels (JTextPane crossingTextPanes[], JTextPane waitingInTextPanes[], JTextPane waitingGroupTextPanes[], ConnHub hub) {
         for (int i = 0; i < 4; i++) {
@@ -13,13 +20,5 @@ public class Tunnels {
 
     public void enterTunnel(Human h, int which, boolean isEnteringRefuge) {
         tunnels[which-1].enterTunnel(h, isEnteringRefuge);
-    }
-    
-    public int[] getHumansInTunnels(){
-        int [] humansInTunnels = new int[4];
-        for (int i = 0; i < 4; i++) {
-            humansInTunnels[i] = tunnels[i].getHumansInTunnel();
-        }
-        return humansInTunnels;
     }
 }

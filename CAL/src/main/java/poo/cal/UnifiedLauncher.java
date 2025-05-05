@@ -3,19 +3,19 @@ import poo.cal_client.CAL_client;
 public class UnifiedLauncher {
     public static void main(String[] args) {
         try {
-            // Ejecutar el servidor como un proceso separado
+            
             Process serverProcess = new ProcessBuilder("java", "-cp", System.getProperty("java.class.path"), "poo.cal.CAL")
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT) // Redirigir salida estándar
-                .redirectError(ProcessBuilder.Redirect.INHERIT) // Redirigir salida de error
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT) 
+                .redirectError(ProcessBuilder.Redirect.INHERIT) 
                 .start();
 
-            // Ejecutar el cliente como otro proceso separado
-            int howManyClients = 2;
+
+            int howManyClients = 1;
             Process clients[] = new Process[howManyClients];
             for (int i = 0; i < howManyClients; i++){
                 Process clientProcess = new ProcessBuilder("java", "-cp", System.getProperty("java.class.path"), "poo.cal_client.CAL_client")
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT) // Redirigir salida estándar
-                .redirectError(ProcessBuilder.Redirect.INHERIT) // Redirigir salida de error
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT) 
+                .redirectError(ProcessBuilder.Redirect.INHERIT) 
                 .start();
                 clients[i] = clientProcess;
             }

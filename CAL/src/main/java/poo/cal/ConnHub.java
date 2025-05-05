@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConnHub extends Thread{
     
@@ -20,6 +21,7 @@ public class ConnHub extends Thread{
                                                                              // This is used for the sending the stats
                                                                              // when a client has just connected.
     private ZombieRanking zombieRanking; // This serves the same purpose as statMap
+    private AtomicBoolean isAlive = new AtomicBoolean(true); // This is used to check if the ConnHub is alive or not.
 
     /**
      * ConnHub constructor.
@@ -59,7 +61,7 @@ public class ConnHub extends Thread{
      * polled and sent to the client.
      */
     public void run(){
-        while(true){
+        while(isAlive.get()){
             try{
                 ConnHandler connHandler = new ConnHandler(serverSocket.accept(), this); // The program will wait here until a 
                                                                                         // new connection is made.
@@ -79,7 +81,10 @@ public class ConnHub extends Thread{
                 }
                 connHandler.sendStat(zombieRanking.getStatName(), zombieRanking.getRanking());
             }catch (Exception e){
-                System.err.println(("Error accepting connection: " + e.getMessage()));
+                if (isAlive.get()) { // If the ConnHub is not alive, it means that the server socket was closed and the program 
+                                     // is terminating, so we don't want to print the stack trace.
+                    System.err.println("Error accepting connection: " + e.getMessage());
+                }
             }
         }
     }
@@ -185,6 +190,7 @@ public class ConnHub extends Thread{
      * It closes all active connections and shuts down the thread pool.
      */
     public void closeAllConnections() {
+        isAlive.set(false); // Set the ConnHub to not alive, so it will stop accepting new connections.
         synchronized (connHandlers) { // Protect the list of connections from concurrent access issues.
             for (ConnHandler connHandler : connHandlers) { // Iterate over all active connections
                 connHandler.closeConn(); // Close each connection

@@ -23,7 +23,7 @@ public class Zombie extends Entity{
     public void run(){
         super.run();
         enterDangerZone();
-        this.sleep(2000 + random.nextInt(2)*1000);
+        this.sleep(2000 + random.nextInt(1001));
         leaveDangerZone();
         while(true){
             enterDangerZone();
@@ -61,7 +61,7 @@ public class Zombie extends Entity{
                 }
             }
         }
-        this.sleep(2000 + random.nextInt(2)*1000);
+        this.sleep(2000 + random.nextInt(1001));
 
       }
     public synchronized void endAttack(){

@@ -41,14 +41,19 @@ public class GraphicArrayList<T> extends ArrayList<T> {
         return result;
     }
 
+    @Override
+    public synchronized boolean isEmpty(){ // Synchronized for tunnelEnter
+        return super.isEmpty();
+    }
+
     /**
-        updateTextPane
-        
-        This method updates the JTextPane with the contents of the ArrayList.
-
-        It is called every time an element is added or removed from the ArrayList.
-
-        It is a synchronized method to ensure that only one thread can update the JTextPane at a time.
+      * updateTextPane
+      * 
+      * This method updates the JTextPane with the contents of the ArrayList.
+      * 
+      * It is called every time an element is added or removed from the ArrayList.
+      * 
+      * It is a synchronized method to ensure that only one thread can update the JTextPane at a time.
      */
     private synchronized void updateTextPane() {
         StringBuilder sb = new StringBuilder();
