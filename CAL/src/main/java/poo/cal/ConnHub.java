@@ -25,6 +25,9 @@ public class ConnHub extends Thread{
         }catch (Exception e){
             logger.log("Error creating server socket: " + e.getMessage());
         }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            closeAllConnections();
+        }));
     }
 
     @Override

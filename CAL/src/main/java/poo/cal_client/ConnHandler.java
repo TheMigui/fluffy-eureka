@@ -78,6 +78,7 @@ public class ConnHandler implements Runnable{
                 
                 if(message.equals("EXIT")){
                     isConnected.set(false);
+                    JOptionPane.showMessageDialog(null, "Connection closed by server", "Info", JOptionPane.INFORMATION_MESSAGE);
                 }else if(message.equals("PAUSE")){
                     synchronized(pauseButton){
                         simulationStatusTF.setText("Paused");

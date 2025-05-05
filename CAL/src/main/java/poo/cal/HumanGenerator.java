@@ -36,7 +36,7 @@ public class HumanGenerator extends Thread {
             h.setDaemon(true);
             h.start();
             try{
-                Thread.sleep(1);//random.nextInt(1501) + 500);
+                Thread.sleep(random.nextInt(1501) + 500);
             }
             catch (InterruptedException e){
                 e.printStackTrace();

@@ -10,7 +10,7 @@ public class UnifiedLauncher {
                 .start();
 
             // Ejecutar el cliente como otro proceso separado
-            int howManyClients = 1;
+            int howManyClients = 2;
             Process clients[] = new Process[howManyClients];
             for (int i = 0; i < howManyClients; i++){
                 Process clientProcess = new ProcessBuilder("java", "-cp", System.getProperty("java.class.path"), "poo.cal_client.CAL_client")
