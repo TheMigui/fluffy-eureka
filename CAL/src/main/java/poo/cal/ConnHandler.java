@@ -9,9 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ConnHandler implements Runnable{
 
     /*
-     * ConnHandler
+     * ConnHandler (Connection Handler)
      * 
-     * This class handles the connection with 1 client. It is responsible for sending statistics and receiving pause/resume requests from the client.
+     * This class handles the connection with 1 client. It is responsible for sending statistics and receiving pause/resume 
+     * requests from the client.
      */
 
     private ConnHub hub;
@@ -19,17 +20,19 @@ public class ConnHandler implements Runnable{
     private DataInputStream in;
     private DataOutputStream out;
     private AtomicBoolean keepAlive = new AtomicBoolean(true);
-    private String clientAddr;
+    private String clientAddr; // The address of the client (IP:port), used for logging purposes.
 
 
 
     /**
      * Constructor for ConnHandler.
+     * 
      * It initializes the socket and the input/output streams, in order to prepare for communication with the client.
      * It also sets the client address for logging purposes.
      * 
      * @param socket The socket that will be used for communication with the client.
-     * @param hub The ConnHub instance that will be used to manage the connection with the client (pause/resume requests will be sent to the hub).
+     * @param hub The ConnHub instance that will be used to manage the connection with the client (pause/resume requests will be 
+     * sent to the hub).
      */
     public ConnHandler(Socket socket, ConnHub hub) {
         this.hub = hub;
@@ -41,6 +44,10 @@ public class ConnHandler implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getClientAddr() {
+        return clientAddr;
     }
 
 
@@ -82,6 +89,19 @@ public class ConnHandler implements Runnable{
         }
     }
 
+    /**
+     * sendStat
+     * 
+     * This method is called by the ConnHub to send statistics to the client.
+     * 
+     * It sends the statistics in the format "statName|value", where statName is the name of the statistic and value is the 
+     * value of the statistic.
+     * 
+     * The method is synchronized to ensure that only one thread can send a message at a time.
+     * 
+     * @param statName The name of the statistic to be sent. Each name corresponds to a TextComponent in the client's GUI.
+     * @param value The value of the statistic to be sent. This is the value that will be displayed in the TextComponent.
+     */
     public synchronized void sendStat(String statName, String value) {
         try {
             out.writeUTF(statName + "|" + value);
@@ -92,6 +112,15 @@ public class ConnHandler implements Runnable{
         }
     }
 
+    /**
+     * sendSimulationStatus
+     * 
+     * Sends the simulation status to the client (either paused or active).
+     * 
+     * The method is synchronized to ensure that only one thread can send a message at a time.
+     * 
+     * @param isActive True if the simulation is active, false if it is paused.
+     */
     public synchronized void sendSimulationStatus(boolean isActive){
         try {
             if (isActive) {
@@ -106,6 +135,16 @@ public class ConnHandler implements Runnable{
         }
     }
 
+    /**
+     * closeConn
+     * 
+     * This method is called to gracefully close the connection with the client.
+     * 
+     * It sends an "EXIT" message to the client, closes the input/output streams and the socket, and sets the keepAlive flag to 
+     * false, so the thread in charge of this connection will exit without any issues.
+     * 
+     * The method is synchronized to ensure that only one thread can close the connection at a time.
+     */
     public synchronized void closeConn() {
         
         try {

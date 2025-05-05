@@ -8,6 +8,7 @@ import java.io.File;
 public class ApocalypseLogger {
     /*
      * AppocalypseLogger is a singleton class that handles logging for the simulation.
+     * 
      * All threads that wish to log something should call the synchronized log method of this class.
      */
     
@@ -16,7 +17,9 @@ public class ApocalypseLogger {
     private GlobalLock gl;
     /**
      * Constructor for ApocalypseLogger.
+     * 
      * Creates a new log file in the logs folder with the current date and time.
+     * 
      * @param gl GlobalLock instance to be used for pausing/resuming (logs won't be written when paused).
      */
     public ApocalypseLogger(GlobalLock gl) {
@@ -44,7 +47,9 @@ public class ApocalypseLogger {
     }
     /**
      * log
+     * 
      * It checks if the logger is open to log and if so, writes the content to the log file.
+     * 
      * It is a synchronized method to ensure that only one thread can log at a time,
      *  thus preventing concurrent access issues.
      * 
@@ -69,8 +74,11 @@ public class ApocalypseLogger {
 
     /**
      * close
+     * 
      * Closes the BufferedWriter and sets the isOpenToLog flag to false.
+     * 
      * Therefore, all log contents are stored properly before closing the program.
+     * 
      * This method is called by the shutdown hook when the program is terminated.
      */
     public synchronized void close(){
