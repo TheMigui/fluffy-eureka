@@ -24,8 +24,8 @@ public class ConnHandler implements Runnable{
      * - Receive messages from the server and update the GUI accordingly
      * - Send the client's pause/resume requests to the server
      */
-    private String serverAddr;
-    private int serverPort;
+    private String serverAddr = "localhost";
+    private int serverPort = 5050;
     private AtomicBoolean isConnected = new AtomicBoolean(false);
     
     private JButton connectButton;
@@ -135,6 +135,7 @@ public class ConnHandler implements Runnable{
             this.isConnected.set(false);
             connStatusTF.setText("Disconnected");
             connectButton.setText("Connect");
+            connectButton.setEnabled(true);
             return;
         }
         try{
